@@ -6,17 +6,17 @@ using namespace std;
 
 class MyCircularQueue {
 private:
-    vector<int> data;
-    int head;
-    int tail;
-    int size;
+    vector<int> data_;
+    int head_;
+    int tail_;
+    int size_;
 public:
     /** Initialize your data structure here. Set the size of the queue to be k. */
     MyCircularQueue(int k) {
-        data.resize(k);
-        head = -1;
-        tail = -1;
-        size = k;
+        data_.resize(k);
+        head_ = -1;
+        tail_ = -1;
+        size_ = k;
     }
     
     /** Insert an element into the circular queue. Return true if the operation is successful. */
@@ -25,10 +25,10 @@ public:
             return false;
         }
         if (isEmpty()) {
-            head = 0;
+            head_ = 0;
         }
-        tail = (tail + 1) % size;
-        data[tail] = value;
+        tail_ = (tail_ + 1) % size_;
+        data_[tail_] = value;
         return true;
     }
     
@@ -37,12 +37,12 @@ public:
         if (isEmpty()) {
             return false;
         }
-        if (head == tail) {
-            head = -1;
-            tail = -1;
+        if (head_ == tail_) {
+            head_ = -1;
+            tail_ = -1;
             return true;
         }
-        head = (head + 1) % size;
+        head_ = (head_ + 1) % size_;
         return true;
     }
     
@@ -51,7 +51,7 @@ public:
         if (isEmpty()) {
             return -1;
         }
-        return data[head];
+        return data_[head_];
     }
     
     /** Get the last item from the queue. */
@@ -59,17 +59,17 @@ public:
         if (isEmpty()) {
             return -1;
         }
-        return data[tail];
+        return data_[tail_];
     }
     
     /** Checks whether the circular queue is empty or not. */
     bool isEmpty() {
-        return head == -1;
+        return head_ == -1;
     }
     
     /** Checks whether the circular queue is full or not. */
     bool isFull() {
-        return ((tail + 1) % size) == head;
+        return ((tail_ + 1) % size_) == head_;
     }
 };
 
