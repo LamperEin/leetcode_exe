@@ -113,19 +113,73 @@ int pivotIndex(vector<int>& nums) {
     
 }
 
-int main() {
-    int numRows = 5;
-    vector<vector<int>> res; 
-    res = generate(numRows);
-    for (int i = 0; i < numRows; i++)
-    {
-        for (auto const element:res[i])
-        {
-            cout << element << " ";
-        }
-        cout << endl;
+int fib(int n) {
+    if(n==0)
+        return 0;
+    if(n==1)
+        return 1;
+    int a = 0, b = 1, i = 1;
+    while(i < n) {
+        i++;
+        int tmp = b;
+        b = a+b;
+        a = tmp;
+        if(b>1e9+7)
+            b = b % (1000000007);
     }
-    cout << endl;
+    return b;
+
+}
+
+vector<int> distributeCandies(int candies, int num_people) {
+    vector<int> res;
+    int candy = 1, i = 0;
+    for(int j = 0; j < num_people; j++) 
+        res.push_back(0);
+    while(candies > 0 && (candies - candy) >= 0) {
+        candies -= candy;
+        res[i%num_people] += candy;
+        candy++;i++; 
+    }
+    candy = candies;
+    res[i%num_people] += candy;
+    return res;
+}
+
+vector<vector<int>> findContinuousSequence(int target) {
+    vector<vector<int>> res;
+    int i = 1;
+    while(target > 0) {
+        target -= i++;
+        if(target > 0 && target % i == 0) {
+            vector<int> tmp;
+            for(int j = 0; j < i; j++)
+                tmp.push_back(target / i + j);
+            res.push_back(tmp);
+        }
+    }
+    reverse(res.begin(), res.end());
+    return res;
+}
+
+int minArray(vector<int>& numbers) {
+    
+}
+
+int main() {
+    int target = 15;
+    vector<vector<int>> res;
+    res = findContinuousSequence(target);
+    cout << "[";
+    for (int i = 0; i < res.size(); i++) {
+        cout << "[";
+        for (int j = 0; j < res[i].size(); j++) {
+            cout << res[i][j] << " ";
+        }
+        cout << "],";
+    }
+    cout << "]" << endl;
+    //cout << endl;
     
     return 0;
 }

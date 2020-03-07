@@ -46,10 +46,39 @@ int maxSubArray(vector<int>& nums) {
     return maxsum;
 }
 
+int minimumTotal(vector<vector<int>>& triangle) {
+    int row = triangle.size()-1;
+    vector<int> mini = triangle[row];
+    for(int i = row-1; i >= 0; i--) {
+        for(int j = 0; j < triangle[i].size(); j++) {
+            mini[j] = triangle[i][j] + min(mini[j], mini[j+1]);
+        }
+    }
+
+    return mini[0];
+}
+
+int coinChange(vector<int>& coins, int amount) {
+    vector<int> dp(amount+1, amount+1);
+    dp[0] = 0;
+
+    for(int i = 0; i < amount+1; i++) {
+        for(int j = 0; j < coins.size(); j++) {
+            if(i >= coins[j])
+                dp[i] = min(dp[i-coins[j]]+1, dp[i]);
+        }
+    }
+    if(dp[amount] == amount+1)
+        return -1;
+
+    return dp[amount];
+}
+
 
 int main() {
-    int a[] = {7, 1, 5, 3, 6, 4};
-    vector<int> prices (a, a+sizeof(a)/sizeof(int));
-    cout << maxProfit(prices) << endl;
+    vector<int> coins (1, 2);
+    int amount = 3;
+
+    cout << coinChange(coins, amount) << endl;
     return 0;
 }
