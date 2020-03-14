@@ -25,8 +25,7 @@ vector<int> spiralOrder(vector<vector<int>>& matrix) {
     int left, right, down, up;
     int row = matrix.size(), col = matrix[0].size();
     while(res.size() == row * col) {
-        //push num in res if in the bound,turn down if touch the bound
-        // 
+
     }
    
 }
@@ -164,6 +163,29 @@ vector<vector<int>> findContinuousSequence(int target) {
 
 int minArray(vector<int>& numbers) {
     
+}
+
+bool canThreePartsEqualSum(vector<int>& A) {    
+    int s = accumulate(A.begin(), A.end(), 0);
+    if(s % 3 != 0) return false;
+    int target = s / 3;
+    int n = A.size(), i = 0, cur = 0;
+    while(i < n) {
+        cur += A[i];
+        if(cur == target)
+            break;
+        ++i;
+    }
+    if(cur != target)
+        return false;
+    int j = i+1;
+    while(j + 1 < n) {
+        cur += A[j];
+        if(cur == target*2)
+            return true;
+        ++j;
+    }
+    return false;
 }
 
 int main() {

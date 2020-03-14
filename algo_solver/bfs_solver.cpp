@@ -5,12 +5,12 @@
 
 using namespace std;
 
-
-int numIsLands(vector<vector<char>>& grid) {
-    
+int slidingPuzzle(vector<vector<char>>& board) {
+    int ans;
+    return ans;
 }
 
 int main() {
-
+    cout << INF << endl
     return 0;
 }

@@ -2,12 +2,13 @@
 #include <algorithm>
 #include <string>
 #include <vector>
+#include <stack>
 
 using namespace std;
 
-
 int strStr(string haystack, string needle) {
     
+    return 0;
 }
 
 string longestCommonPrefix(vector<string>& strs) {
@@ -61,13 +62,61 @@ string addBinary(string a, string b) {
     return res;
 }
 
+bool isValid(string s) {
+    if(s[0] == '\0') return true;
+    stack<char> left_brackets;
+    bool is_valid = true;
+    for(int i = 0; i < s.size(); i++) {
+        if(s[i] == '(' || s[i] == '[' || s[i] == '{')
+            left_brackets.push(s[i]);
+        else if(!left_brackets.empty()) {
+            if(s[i] == '}' && left_brackets.top() == '{')
+                left_brackets.pop();
+            else if (s[i] == ']' && left_brackets.top() == '[')
+                left_brackets.pop();
+            else if (s[i] == ')' && left_brackets.top() == '(')
+                left_brackets.pop();
+            else {
+                is_valid = false;
+                break;
+            }
+        } else {
+            is_valid = false;
+        }
+    }
+    if(left_brackets.empty() && is_valid == true)
+        return true;
+    return false;
+}
+
+vector<vector<string>> groupAnagrams(vector<string>& strs) {
+    vector<vector<string>> res;
+
+
+    return res;
+}
+
+int lengthOfLongestSubstring(string s) {
+    int res;
+
+    return res;
+}
+
+string longestPalindrome(string s) {
+
+}
+
+so9tring gcdOfStrings(string str1, string str2) {
+    if (str1 + str2 != str2 + str1) return "";
+    return str1.substr(0, __gcd((int)str1.length(), (int)str2.length())); 
+}
+
 int main() {
-    vector<string> strs = {"flower", "flow", "flight"};
-    vector<string> strs1 = {"dog", "racecar", "car"};
-    string res;
-    res = longestCommonPrefix(strs);
-    cout << res <<endl;
-    res = longestCommonPrefix(strs1);
-    cout << res <<endl;   
+    string str1 = "ABCABC", str2 = "ABC";
+    cout << gcdOfStrings(str1, str2) << endl;
+    string str3 = "ABABAB", str4 = "ABAB";
+    cout << gcdOfStrings(str3, str4) << endl;
+    str1 = "LEET", str2 = "CODE";
+    cout << gcdOfStrings(str1, str2) << endl;
     return 0;
 }
