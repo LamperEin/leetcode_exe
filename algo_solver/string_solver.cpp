@@ -2,12 +2,14 @@
 #include <algorithm>
 #include <string>
 #include <vector>
+#include <stack>
+#include <unordered_map>
 
 using namespace std;
 
-
 int strStr(string haystack, string needle) {
     
+    return 0;
 }
 
 string longestCommonPrefix(vector<string>& strs) {
@@ -79,12 +81,99 @@ int lengthOfLongestSubstring(string s) {
     return maxlen;
 }
 
+bool isValid(string s) {
+    if(s[0] == '\0') return true;
+    stack<char> left_brackets;
+    bool is_valid = true;
+    for(int i = 0; i < s.size(); i++) {
+        if(s[i] == '(' || s[i] == '[' || s[i] == '{')
+            left_brackets.push(s[i]);
+        else if(!left_brackets.empty()) {
+            if(s[i] == '}' && left_brackets.top() == '{')
+                left_brackets.pop();
+            else if (s[i] == ']' && left_brackets.top() == '[')
+                left_brackets.pop();
+            else if (s[i] == ')' && left_brackets.top() == '(')
+                left_brackets.pop();
+            else {
+                is_valid = false;
+                break;
+            }
+        } else {
+            is_valid = false;
+        }
+    }
+    if(left_brackets.empty() && is_valid == true)
+        return true;
+    return false;
+}
+
+vector<vector<string>> groupAnagrams(vector<string>& strs) {
+    vector<vector<string>> res;
+
+
+    return res;
+}
+
+int lengthOfLongestSubstring(string s) {
+    int res;
+
+    return res;
+}
+
+string longestPalindrome(string s) {
+    string ans;
+
+    return ans;
+}
+
+string gcdOfStrings(string str1, string str2) {
+    if (str1 + str2 != str2 + str1) return "";
+    return str1.substr(0, __gcd((int)str1.length(), (int)str2.length())); 
+}
+
+string compressString(string S) {
+    if(S.size() <= 1) return S;
+    string ans;
+    int cnt = 0, len = S.size();
+    int i = 0, j = 1;
+    while(i < len ) {
+        if(S[i] == S[j])
+            ++j;
+        else if(S[i] != S[j] || j == len) {
+            ans += S[i] + to_string(j-i);
+            ++j;
+            i = j - 1;
+        }
+    }
+    if(ans.size() >= len) return S;
+    return ans;
+}
+
+int countCharacters(vector<string>& words, string chars) {
+    unordered_map<char, int> chars_cnt;
+    for (char c : chars)
+        ++chars_cnt[c];
+    int ans = 0;
+    for (string word : words) {
+        unordered_map<char, int> word_cnt;
+        for (char c : word)
+            ++word_cnt[c];
+        bool is_ans = true;
+        for (char c : word)
+            if (chars_cnt[c] < word_cnt[c]) {
+                is_ans = false;
+                break;
+            }
+            if (is_ans)
+                ans += word.size();
+        }
+        return ans;
+}
+
 int main() {
-    string s1 = "abcabcbb";
-    string s2 = "bbbbb";
-    string s3 = "pwwkew";
-    cout << lengthOfLongestSubstring(s1) << endl;
-    cout << lengthOfLongestSubstring(s2) << endl;
-    cout << lengthOfLongestSubstring(s3) << endl;
+    string str1 = "aabcccccaaa", str2 = "abbccdddffff";
+    cout << compressString(str1) << endl;
+    cout << compressString(str2) << endl;
     return 0;
 }

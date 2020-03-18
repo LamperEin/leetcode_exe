@@ -86,6 +86,54 @@ bool hasPathSum(TreeNode* root, int sum) {
     
 }
 
+bool isValidBST(TreeNode* root) {
+
+}
+// The following is the solver of diameterOfBinaryTree
+int ans;
+int depth(TreeNode* rt) {
+    if(rt == NULL) return 0;
+    int L = depth(rt->left);
+    int R = depth(rt->right);
+    ans = max(ans, L+R+1);
+    return max(L, R)+1;
+}
+
+int diameterOfBinaryTree(TreeNode* root) {
+    ans = 1;
+    depth(root);
+    return ans-1;
+}
+
+TreeNode* mirrorTree(TreeNode* root) {
+    if(root == NULL) return NULL;
+
+    TreeNode* tmp = root->left;
+    root->left = root->right;
+    root->right = tmp;
+
+    if(root->left)
+        mirrorTree(root->left);
+    if(root->right)
+        mirrorTree(root->right);
+    return root;
+}
+
+TreeNode* buildTree(vector<int>& preorder, vector<int>& inorder) {
+    return build(preorder, inorder, 0, 0, inorder.size() - 1);
+}
+
+TreeNode* build(vector<int>& preorder, vector<int>& inorder, int root, int start, int end){// 中序的start和end
+    if(start > end) return NULL;
+    TreeNode *tree = new TreeNode(preorder[root]);
+    int i = start;
+    while(i < end && preorder[root] != inorder[i]) 
+        i++;
+    tree->left = build(preorder, inorder, root + 1, start, i - 1);
+    tree->right = build(preorder, inorder, root + 1 + i - start, i + 1, end);
+    return tree;
+}
+
 int main() {
 
     return 0;
