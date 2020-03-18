@@ -103,20 +103,59 @@ int lengthOfLongestSubstring(string s) {
 }
 
 string longestPalindrome(string s) {
+    string ans;
 
+    return ans;
 }
 
-so9tring gcdOfStrings(string str1, string str2) {
+string gcdOfStrings(string str1, string str2) {
     if (str1 + str2 != str2 + str1) return "";
     return str1.substr(0, __gcd((int)str1.length(), (int)str2.length())); 
 }
 
+string compressString(string S) {
+    if(S.size() <= 1) return S;
+    string ans;
+    int cnt = 0, len = S.size();
+    int i = 0, j = 1;
+    while(i < len ) {
+        if(S[i] == S[j])
+            ++j;
+        else if(S[i] != S[j] || j == len) {
+            ans += S[i] + to_string(j-i);
+            ++j;
+            i = j - 1;
+        }
+    }
+    if(ans.size() >= len) return S;
+    return ans;
+}
+
+int countCharacters(vector<string>& words, string chars) {
+    unordered_map<char, int> chars_cnt;
+    for (char c : chars)
+        ++chars_cnt[c];
+    int ans = 0;
+    for (string word : words) {
+        unordered_map<char, int> word_cnt;
+        for (char c : word)
+            ++word_cnt[c];
+        bool is_ans = true;
+        for (char c : word)
+            if (chars_cnt[c] < word_cnt[c]) {
+                is_ans = false;
+                break;
+            }
+            if (is_ans)
+                ans += word.size();
+        }
+        return ans;
+    }
+}
+
 int main() {
-    string str1 = "ABCABC", str2 = "ABC";
-    cout << gcdOfStrings(str1, str2) << endl;
-    string str3 = "ABABAB", str4 = "ABAB";
-    cout << gcdOfStrings(str3, str4) << endl;
-    str1 = "LEET", str2 = "CODE";
-    cout << gcdOfStrings(str1, str2) << endl;
+    string str1 = "aabcccccaaa", str2 = "abbccdddffff";
+    cout << compressString(str1) << endl;
+    cout << compressString(str2) << endl;
     return 0;
 }
