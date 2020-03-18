@@ -61,13 +61,30 @@ string addBinary(string a, string b) {
     return res;
 }
 
+int lengthOfLongestSubstring(string s) {
+    if(s.size() < 2) return s.size();
+    int maxlen = 1;
+    int count = 1;
+    bool is_break = false;
+    for (int i = 1; i < s.size(); i++) {
+        if(s[i-1] != s[i] && !is_break)
+            count++;
+        else if(s[i-1] == s[i] && !is_break) {
+            is_break = true;
+            count = 1;
+        }
+        if(maxlen < count) maxlen = count;
+    }
+
+    return maxlen;
+}
+
 int main() {
-    vector<string> strs = {"flower", "flow", "flight"};
-    vector<string> strs1 = {"dog", "racecar", "car"};
-    string res;
-    res = longestCommonPrefix(strs);
-    cout << res <<endl;
-    res = longestCommonPrefix(strs1);
-    cout << res <<endl;   
+    string s1 = "abcabcbb";
+    string s2 = "bbbbb";
+    string s3 = "pwwkew";
+    cout << lengthOfLongestSubstring(s1) << endl;
+    cout << lengthOfLongestSubstring(s2) << endl;
+    cout << lengthOfLongestSubstring(s3) << endl;
     return 0;
 }

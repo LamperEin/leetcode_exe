@@ -14,8 +14,8 @@ struct TreeNode {
 int maxDepth_recur(TreeNode* root) {
     if(root == NULL)
         return 0;
-    int left_tree_depth = maxDepth(root->left);
-    int right_tree_depth = maxDepth(root->right);
+    int left_tree_depth = maxDepth_recur(root->left);
+    int right_tree_depth = maxDepth_recur(root->right);
     return max(left_tree_depth, right_tree_depth)+1;
 }
 
@@ -67,7 +67,7 @@ vector<int> postorderTraversal(TreeNode* root) {
     return res;
 }
 
-bool isSymmetric(TreeNode* root1， TreeNode* root2) {
+bool isSymmetric(TreeNode* root1, TreeNode* root2) {
     if(root1 == NULL && root2 == NULL)
         return true;
     if(root1 == NULL || root2 == NULL)
