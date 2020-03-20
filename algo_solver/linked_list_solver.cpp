@@ -108,7 +108,28 @@ ListNode* getKthFromEnd(ListNode* head, int k) {
 
 }
 
+ListNode* addTwoNumber(ListNode* l1, ListNode* l2) {
+    ListNode ans_head(0), *p = &ans_head;
+    int carry = 0;
+    while(l1 || l2 || carry)  {
+        int tmp = 0;
+        if(l1) tmp += l1->val;
+        if(l2) tmp += l2->val;
+        tmp += carry;
+        
+        carry = tmp / 10;
+        tmp %= 10;
 
+        ListNode* next = l1? l1 : l2;
+        if(next==NULL) next = new ListNode(tmp);
+        next->val = tmp;
+
+        p->next = next;
+        p = p->next;
+        l1 = l1? l1->next : NULL;
+        l2 = l2? l2->next : NULL;
+    }
+}
 
 int main() {
     //int a[30];

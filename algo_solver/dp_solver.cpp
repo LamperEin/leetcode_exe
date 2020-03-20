@@ -86,7 +86,7 @@ int lengthOfLIS(vector<int>& nums) {
         }
     }
 
-    return *max_elemet(dp.begin(), dp.end());
+    return *max_element(dp.begin(), dp.end());
 }
 
 int uniquePaths(int m, int n) {
@@ -94,8 +94,20 @@ int uniquePaths(int m, int n) {
     return 0;
 }
 
+int getKthMagicNumber(int k) {
+    int p3 = 0, p5 = 0, p7 = 0;
+    int dp[k];
+    dp[0] = 1;
+    for(int i = 1; i < k; ++i) {
+        dp[i] = min(dp[p3] * 3, min(dp[p5] * 5, dp[p7] * 7));
+        if(dp[i] == dp[p3]*3) p3++;
+        if(dp[i] == dp[p5]*5) p5++;
+        if(dp[i] == dp[p7]*7) p7++;
+    }
+    return dp[k-1];
+}
 
 int main() {
-
+    cout << getKthMagicNumber(16) << endl;
     return 0;
 }

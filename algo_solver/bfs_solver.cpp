@@ -41,6 +41,6 @@ int maxAreaOfIsland(vector<vector<int>>& grid) {
 }
 
 int main() {
-    cout << INF << endl
+
     return 0;
 }
