@@ -13,9 +13,7 @@ int hammingWeight(uint32_t n) {
 }
 
 
-int main() {
-    uint32_t a = 67;
-    int res = hammingWeight(a);
-    cout << res <<endl;
+int main() {  //0123456789
+
     return 0;
 }

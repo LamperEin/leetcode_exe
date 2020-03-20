@@ -115,12 +115,6 @@ vector<vector<string>> groupAnagrams(vector<string>& strs) {
     return res;
 }
 
-int lengthOfLongestSubstring(string s) {
-    int res;
-
-    return res;
-}
-
 string longestPalindrome(string s) {
     string ans;
 
@@ -171,9 +165,12 @@ int countCharacters(vector<string>& words, string chars) {
         return ans;
 }
 
+
 int main() {
-    string str1 = "aabcccccaaa", str2 = "abbccdddffff";
-    cout << compressString(str1) << endl;
-    cout << compressString(str2) << endl;
+   //string s = "HG[3|B[2|CA]]F";
+    //string s;
+    //getline(cin, s);
+    //cout << stringUnzip(s) << endl;
+
     return 0;
 }
