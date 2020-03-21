@@ -117,6 +117,19 @@ int uniquePaths(int m, int n) {
     return 0;
 }
 
+int maxValue(vector<vector<int>>& grid) {
+    int rows = grid.size(), cols = grid[0].size();
+    vector<int> dp(cols, 0);
+    for(int i = 0; i < rows; i++) {
+        for(int j = 0; j < cols; j++) {
+            int left = 0, up = 0;
+            if(i > 0) up = dp[j];
+            if(j > 0) left = dp[j-1];
+            dp[j] = max(up, left) + grid[i][j];
+        }
+    }
+    return dp[cols-1];
+}
 
 int main() {
 

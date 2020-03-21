@@ -4,6 +4,7 @@
 #include <vector>
 #include <stack>
 #include <unordered_map>
+#include <map>
 
 using namespace std;
 
@@ -63,21 +64,18 @@ string addBinary(string a, string b) {
     return res;
 }
 
-int lengthOfLongestSubstring(string s) {
-    if(s.size() < 2) return s.size();
-    int maxlen = 1;
-    int count = 1;
-    bool is_break = false;
-    for (int i = 1; i < s.size(); i++) {
-        if(s[i-1] != s[i] && !is_break)
-            count++;
-        else if(s[i-1] == s[i] && !is_break) {
-            is_break = true;
-            count = 1;
-        }
-        if(maxlen < count) maxlen = count;
-    }
 
+int lengthOfLongestSubstring(string s) {
+    int maxlen = 0;
+    int curlen = 0;
+    map<char, int> table;
+    int idx = 0;
+    while(idx < s.size()) {
+        if(table.find(s[idx]) != table.end())
+            curlen = max(curlen, table[s[idx]]+1);
+        table[s[idx++]] = idx;
+        maxlen = max(idx-curlen, maxlen);
+    }
     return maxlen;
 }
 
@@ -193,6 +191,17 @@ string reverseWords(string s) {
     }
     ans += reverseStr(tmp);
     return reverseStr(ans);
+}
+
+char firstUniqChar(string s) {
+    unordered_map<char, int> table;
+    for(char c : s) {
+        table[c]++;
+    }
+    for(char c : s) {
+        if(table[c] == 1) return c;
+    }
+    return ' ';
 }
 
 int main() {

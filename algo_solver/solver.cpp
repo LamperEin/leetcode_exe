@@ -286,21 +286,84 @@ vector<int> singleNumbers(vector<int>& nums) {
     return ans;
 }
 
+int missingNumber(vector<int>& nums) {
+    int left = 0, right = nums.size();
+    while(left < right) {
+        int mid = (left + right)>>2;
+        if(nums[mid] != mid) {
+            right = mid;
+        } 
+        else left = mid+1;
+
+    }
+    return left;
+}
+
+int search(vector<int>& nums, int target) {
+    int i = 0, j = nums.size()-1;
+    while(i <= j) {
+        int mid = i + (j-i)/2;
+        if(nums[mid] <= target)
+            i = mid + 1;
+        else j = mid-1;
+    }
+    int right = i;
+    i = 0, j = nums.size()-1;
+    while(i <= j) {
+        int mid = i + (j - i)/2;
+        if(nums[mid] >= target)
+            j = mid - 1;
+        else i = mid+1;
+    }
+    int left = j;
+    return right - left - 1;
+}
+
+// use merge sort to solve reverse pairs
+int reversePairsCore(vector<int>& nums, int l, int r) {
+    if(r-l<=1) return 0;
+    int mid = (r+l)>>1;
+    vector<int> tmp;
+    int ans = reversePairsCore(nums, l, mid) + reversePairsCore(nums, mid, r);
+
+    int i = l;
+    int j = mid;
+    while(i < mid && j < r) {
+        if(nums[i] > nums[j]) {
+            ans += mid - i;
+            tmp.push_back(nums[j++]);
+        } else {
+            tmp.push_back(nums[i++]);
+        }
+    }
+    while(i < mid) tmp.push_back(nums[i++]);
+    while(j < r) tmp.push_back(nums[j++]);
+    copy(tmp.begin(), tmp.end(), nums.begin()+l);
+    return ans;
+}
+
+int reversePairs(vector<int>& nums) {
+    return reversePairsCore(nums, 0, nums.size());
+}
+
+int nthUglyNumber(int n) {
+    if(n <= 0) return 0;
+    vector<int> ugly(n ,0);
+    ugly[0] = 0;
+    int p2 = 0, p3 = 0, p5 = 0;
+    for(int i = 1; i < n; i++) {
+        ugly[i] = min(ugly[p2]*2, min(ugly[p3]*3, ugly[p5]*5));
+        if(ugly[i] == ugly[p2]*2) p2++;
+        if(ugly[i] == ugly[p3]*3) p3++;
+        if(ugly[i] == ugly[p5]*5) p5++;
+    }
+    return ugly[n-1];
+}
 
 int main() {
-    int target = 15;
-    vector<vector<int>> res;
-    res = findContinuousSequence(target);
-    cout << "[";
-    for (int i = 0; i < res.size(); i++) {
-        cout << "[";
-        for (int j = 0; j < res[i].size(); j++) {
-            cout << res[i][j] << " ";
-        }
-        cout << "],";
-    }
-    cout << "]" << endl;
+    vector<int> nums = {5, 7, 7, 8, 8, 10};
     //cout << endl;
-    
+    cout << search(nums, 8) << endl;
+    cout << search(nums, 9) << endl;
     return 0;
 }
