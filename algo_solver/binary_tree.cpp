@@ -134,6 +134,11 @@ TreeNode* build(vector<int>& preorder, vector<int>& inorder, int root, int start
     return tree;
 }
 
+bool isBalanced(TreeNode* root) {
+    
+
+}
+
 int main() {
 
     return 0;

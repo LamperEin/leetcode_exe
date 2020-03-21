@@ -2,6 +2,9 @@
 #include <algorithm>
 #include <vector>
 #include <numeric>
+#include <queue>
+#include <cstring>
+#include <bitset>
 
 using namespace std;
 
@@ -195,6 +198,94 @@ bool isRectangleOverlap(vector<int>& rec1, vector<int>& rec2) {
              rec1[0] >= rec2[2] ||  // right
              rec1[1] >= rec2[3]);   // top
 }
+
+vector<int> constructArr(vector<int>& a) {
+    int len = a.size();
+    vector<int> b(len);
+    int tmp = 1;
+    for(int i = 0; i < len; i++) {
+        b[i] = tmp;
+        tmp *= a[i];
+    }
+    tmp = 1;
+    for(int i = len-1; i >= 0; i--) {
+        b[i] *= tmp;
+        tmp *= a[i];
+    }
+    return b;
+}
+
+bool isStraight(vector<int>& nums) {
+    if(nums.size() < 1) return false;
+    int cnt_zero = 0;
+    int cnt_gap = 0;
+    sort(nums.begin(), nums.end());
+    for(int i = 0; i < nums.size(); i++) {
+        if(nums[i] = 0) ++cnt_zero;
+    }
+
+    int small = cnt_zero;
+    int big = small+1;
+    while(big < nums.size()) {
+        
+        if(nums[big] == nums[small]) return false;
+
+        cnt_gap += nums[big] - nums[small] - 1;
+        small = big;
+        ++big;
+    }
+    return cnt_gap >= cnt_zero? true : false;
+}
+
+vector<int> maxSlidingWindow(vector<int>& nums, int k) {
+    vector<int> ans;
+    deque<int> idx;
+    int len = nums.size();
+    if(len == 0) return ans;
+    for(int i = 0; i < len; i++) {
+        while(!idx.empty() && i - idx.front() + 1 > k)
+            idx.pop_front();
+        while(!idx.empty() && nums[idx.back()] < nums[i])
+            idx.pop_back();
+        idx.push_back(i);
+        if(i >= k-1)
+            ans.push_back(nums[idx.front()]);
+    }
+    return ans;
+}
+
+int singleNumber(vector<int>& nums) {
+    // method-1: use unordered_map 
+    // method-2
+    vector<int> v(32, 0);
+    for(int i = 0; i < nums.size(); i++) {
+        bitset<32> t(nums[i]);
+        for(int j = 0; j < t.size(); j++) {
+            if(t[j] == 1) v[j]++;
+        }
+    }
+    bitset<32> t;
+    for(int i = 0; i < v.size(); i++) {
+        if(v[i] % 3 != 0)
+            t.set(i);
+    }
+    return (int)t.to_ulong();
+}
+
+vector<int> singleNumbers(vector<int>& nums) {
+    vector<int> ans(2, 0);
+    int diff = 0;
+    for(int num : nums) diff ^= num;
+    diff = diff & (-diff);
+    for(int num : nums) {
+        if((diff & num) == 0)
+            ans[0] ^= num;
+        else
+            ans[1] ^= num;
+    }
+    return ans;
+}
+
 
 int main() {
     int target = 15;

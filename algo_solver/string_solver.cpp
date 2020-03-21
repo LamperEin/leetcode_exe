@@ -154,7 +154,7 @@ int countCharacters(vector<string>& words, string chars) {
         for (char c : word)
             ++word_cnt[c];
         bool is_ans = true;
-        for (char c : word)
+        for (char c : word){
             if (chars_cnt[c] < word_cnt[c]) {
                 is_ans = false;
                 break;
@@ -162,9 +162,38 @@ int countCharacters(vector<string>& words, string chars) {
             if (is_ans)
                 ans += word.size();
         }
-        return ans;
+    }
+    return ans;
 }
 
+string reverseLeftWords(string s, int n) {
+    return s.substr(n)+s.substr(0, n);
+}
+
+string reverseStr(string s) {
+    int i = 0, j = s.size()-1;
+    while(i < j) swap(s[i++], s[j--]);
+    return s;
+}
+
+string reverseWords(string s) {
+    int k = 0, idxr = s.size()-1;
+    while(s[k] == ' ') k++;
+    while(s[idxr] == ' ') idxr--;
+    string tmp = "", ans = "";
+    for(int i = k; i <= idxr; i++) {
+        if(s[i] != ' ')
+            tmp += s[i];
+        else {
+            while(s[i] == ' ') i++;
+            i--;
+            ans += reverseStr(tmp);
+            ans += " "; tmp = "";
+        }
+    }
+    ans += reverseStr(tmp);
+    return reverseStr(ans);
+}
 
 int main() {
    //string s = "HG[3|B[2|CA]]F";
