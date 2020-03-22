@@ -1,9 +1,10 @@
 #include <iostream>
 #include <algorithm>
 #include <vector>
+#include <stack>
 
 using namespace std;
-
+int ans = 0, n = 0;
 struct TreeNode {
     int val;
     TreeNode* left;
@@ -14,8 +15,8 @@ struct TreeNode {
 int maxDepth_recur(TreeNode* root) {
     if(root == NULL)
         return 0;
-    int left_tree_depth = maxDepth(root->left);
-    int right_tree_depth = maxDepth(root->right);
+    int left_tree_depth = maxDepth_recur(root->left);
+    int right_tree_depth = maxDepth_recur(root->right);
     return max(left_tree_depth, right_tree_depth)+1;
 }
 
@@ -67,7 +68,7 @@ vector<int> postorderTraversal(TreeNode* root) {
     return res;
 }
 
-bool isSymmetric(TreeNode* root1， TreeNode* root2) {
+bool isSymmetric(TreeNode* root1, TreeNode* root2) {
     if(root1 == NULL && root2 == NULL)
         return true;
     if(root1 == NULL || root2 == NULL)
@@ -133,6 +134,50 @@ TreeNode* build(vector<int>& preorder, vector<int>& inorder, int root, int start
     tree->left = build(preorder, inorder, root + 1, start, i - 1);
     tree->right = build(preorder, inorder, root + 1 + i - start, i + 1, end);
     return tree;
+}
+
+int gitDeep(TreeNode* root) {
+    if(root == NULL) return 0;
+    int l = gitDeep(root->left);
+    int r = gitDeep(root->right);
+    if(l < 0 || r < 0 || l - r >= 2 || r-l >= 2)
+        return -1;
+    return max(l, r)+1;
+}
+
+bool isBalanced(TreeNode* root) {
+   if(root == NULL) return true;
+   return gitDeep(root) > 0;
+}
+
+void dfs(TreeNode* root, int k) {
+    if(root == NULL) return;
+    if(root->right) dfs(root->right, k);
+    n++;
+    if(n == k) ans = root->val;
+    if(root->left) dfs(root->left, k);
+}
+
+int kthLargest_recur(TreeNode* root, int k) {
+    dfs(root, k);
+    return ans;
+}
+
+int kthLargest_loop(TreeNode* root, int k) {
+    stack<TreeNode*> sk;
+    int n = 0;
+    while(!sk.empty() || root) {
+        while(root) {
+            sk.push(root);
+            root = root-> right;
+        }
+        root = sk.top();
+        sk.pop();
+        n++;
+        if(n == k) return root->val;
+        root = root -> left;
+    }
+    return 0;
 }
 
 int main() {

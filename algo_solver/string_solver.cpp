@@ -3,6 +3,8 @@
 #include <string>
 #include <vector>
 #include <stack>
+#include <unordered_map>
+#include <map>
 
 using namespace std;
 
@@ -62,6 +64,20 @@ string addBinary(string a, string b) {
     return res;
 }
 
+int lengthOfLongestSubstring(string s) {
+    int maxlen = 0;
+    int curlen = 0;
+    map<char, int> table;
+    int idx = 0;
+    while(idx < s.size()) {
+        if(table.find(s[idx]) != table.end())
+            curlen = max(curlen, table[s[idx]]+1);
+        table[s[idx++]] = idx;
+        maxlen = max(idx-curlen, maxlen);
+    }
+    return maxlen;
+}
+
 bool isValid(string s) {
     if(s[0] == '\0') return true;
     stack<char> left_brackets;
@@ -96,12 +112,6 @@ vector<vector<string>> groupAnagrams(vector<string>& strs) {
     return res;
 }
 
-int lengthOfLongestSubstring(string s) {
-    int res;
-
-    return res;
-}
-
 int longestPalindrome(string s) {
     unordered_map<char, int> count;
     int ans = 0;
@@ -113,7 +123,7 @@ int longestPalindrome(string s) {
         if (v % 2 == 1 and ans % 2 == 0)
             ++ans;
     }
-    return ans;
+
 }
 
 string gcdOfStrings(string str1, string str2) {
@@ -149,7 +159,7 @@ int countCharacters(vector<string>& words, string chars) {
         for (char c : word)
             ++word_cnt[c];
         bool is_ans = true;
-        for (char c : word)
+        for (char c : word){
             if (chars_cnt[c] < word_cnt[c]) {
                 is_ans = false;
                 break;
@@ -157,13 +167,68 @@ int countCharacters(vector<string>& words, string chars) {
             if (is_ans)
                 ans += word.size();
         }
-        return ans;
     }
+    return ans;
+}
+
+string reverseLeftWords(string s, int n) {
+    return s.substr(n)+s.substr(0, n);
+}
+
+string reverseStr(string s) {
+    int i = 0, j = s.size()-1;
+    while(i < j) swap(s[i++], s[j--]);
+    return s;
+}
+
+string reverseWords(string s) {
+    int k = 0, idxr = s.size()-1;
+    while(s[k] == ' ') k++;
+    while(s[idxr] == ' ') idxr--;
+    string tmp = "", ans = "";
+    for(int i = k; i <= idxr; i++) {
+        if(s[i] != ' ')
+            tmp += s[i];
+        else {
+            while(s[i] == ' ') i++;
+            i--;
+            ans += reverseStr(tmp);
+            ans += " "; tmp = "";
+        }
+    }
+    ans += reverseStr(tmp);
+    return reverseStr(ans);
+}
+
+char firstUniqChar(string s) {
+    unordered_map<char, int> table;
+    for(char c : s) {
+        table[c]++;
+    }
+    for(char c : s) {
+        if(table[c] == 1) return c;
+    }
+    return ' ';
+}
+
+string minNumber(vector<int>& nums) {
+    vector<string> strs;
+    string ans;
+    for(int num : nums) 
+        strs.push_back(to_string(num));
+    sort(strs.begin(), strs.end(), [](string& a, string& b){
+        return a+b < b+a;
+    });
+    for(string str : strs)
+        ans += str;
+    return ans;
 }
 
 int main() {
-    string str1 = "aabcccccaaa", str2 = "abbccdddffff";
-    cout << compressString(str1) << endl;
-    cout << compressString(str2) << endl;
+   //string s = "HG[3|B[2|CA]]F";
+    //string s;
+    //getline(cin, s);
+    //cout << stringUnzip(s) << endl;
+
     return 0;
 }

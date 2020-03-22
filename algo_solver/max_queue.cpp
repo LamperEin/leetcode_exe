@@ -5,44 +5,34 @@
 using namespace std;
 
 class MaxQueue {
-private:
-    struct internalData {
-        int value;
-        int index;
-    };
-    deque<internalData> q_;
-    deque<internalData> maximums;
-    int current_index;
-
+    queue<int> q;
+    deque<int> d; // max value 
 public:
     MaxQueue() {
-        current_index = 0;
     }
-
+    
     int max_value() {
-        if(maximums.empty())
+        if (d.empty())
             return -1;
-        return maximums.front().value;
+        return d.front();
     }
-
+    
     void push_back(int value) {
-        while(!maximums.empty() && value >= maximums.back().value)
-            maximums.pop_back();
-        internalData idata = {value, current_index};
-        q_.push_back(idata);
-        maximums.push_back(idata);
-
-        current_index++;
+        while (!d.empty() && d.back() < value) {
+            d.pop_back();
+        }
+        d.push_back(value);
+        q.push(value);
     }
-
+    
     int pop_front() {
-        if(q_.empty())
-        return -1;
-        if(maximums.front().value == q_.front().value)
-            maximums.pop_front();
-        int res = q_.front().value;
-        q_.pop_front();
-        return res;
+        if (q.empty())
+            return -1;
+        int ans = q.front();
+        if (ans == d.front())
+            d.pop_front();
+        q.pop();
+        return ans;
     }
 };
 

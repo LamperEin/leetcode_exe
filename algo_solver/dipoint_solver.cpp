@@ -36,16 +36,17 @@ int arrayPairSum(vector<int>& nums) {
 // 2 + 7 = 9. index1 = 1, index2 = 2;
 vector<int> twoSum(vector<int>& nums, int target) {
     vector<int> res;
-    map<int, int> table;
-    for(int i = 0; i < nums.size(); i++) {
-        int x = target - nums[i];
-        int j = -1;
-        if(table.count(x))
-            j = table[x];
-        else
-            table[nums[i]] = i;
-        if (j!=-1) {
-            res.push_back(j+1); res.push_back(i+1);   
+    int l = 0, r = nums.size()-1;
+    while(l < r) {
+        int tmp = nums[l] + nums[r];
+        if(tmp == target) {
+            res.push_back(l+1);
+            res.push_back(r+1);
+            break;
+        } else if (tmp < target) {
+            l++;
+        } else {
+            r++;
         }
     }
     return res;

@@ -120,6 +120,50 @@ ListNode* addTwoNumber(ListNode* l1, ListNode* l2) {
         carry = tmp / 10;
         tmp %= 10;
 
+    }
+}
+ListNode* getIntersectionNode(ListNode* headA, ListNode* headB) {
+    // double pointers
+    if(headA == NULL || headB == NULL) return nullptr;
+    ListNode* p1 = headA;
+    ListNode* p2 = headB;
+    while(p1 != p2) {
+        p1 = p1 == NULL ? headB : p1->next;
+        p2 = p2 == NULL ? headA : p2->next;
+    }
+    return p1;
+}
+
+void deleteDuplication(ListNode** head) {
+    if(*head = NULL) return;
+    ListNode* pre = nullptr;
+    ListNode* cur = *head;
+    while(cur != nullptr) {
+        ListNode* pnext = cur->next;
+        bool is_dupliacte = false;
+        if(pnext != nullptr && pnext->val == pre->val)
+            is_dupliacte = true;
+        if(!is_dupliacte) {
+            pre = cur;
+            cur = cur->next;
+        } else {
+            int val = cur->val;
+            ListNode* pto_be_delete = cur;
+            while(pto_be_delete != nullptr && pto_be_delete->val == val) {
+                pnext = pto_be_delete->next;
+                delete pto_be_delete;
+
+                pto_be_delete = nullptr;
+                pto_be_delete = pnext;
+            }
+            if(pre == nullptr)
+                *head = pnext;
+            else pre->next = pnext;
+            cur = pnext;
+        }
+    }
+}
+
         ListNode* next = l1? l1 : l2;
         if(next==NULL) next = new ListNode(tmp);
         next->val = tmp;
