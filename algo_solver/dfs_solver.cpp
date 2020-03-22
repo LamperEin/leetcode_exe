@@ -62,6 +62,22 @@ int maxAreaOfIsland(vector<vector<int>>& grid) {
     return ans;
 }
 
+int dfs(int i, int j, int m, int n, int k, vector<vector<bool>> visited) {
+    if(i<0 || i>=m || j<0 || j>=n || visited[i][j] || i/10+i%10+j/10+j%10>k)
+        return 0;
+    visited[i][j] = true;
+    return dfs(i+1, j, m, n, k, visited) + 
+           dfs(i-1, j, m, n, k, visited) +
+           dfs(i, j-1, m, n, k, visited) +
+           dfs(i, j+1, m, n, k, visited) + 1;
+}
+
+int movingCount(int m, int n, int k) {
+    vector<vector<bool>> visited(m, vector<bool>(n, 0));
+    return dfs(0, 0, m, n, k, visited);
+}
+
+
 int main() {
     vector<vector<int>> grid1 = {{0,0,1,0,0,0,0,1,0,0,0,0,0},
                                  {0,0,0,0,0,0,0,1,1,1,0,0,0},

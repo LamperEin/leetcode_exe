@@ -120,6 +120,35 @@ ListNode* getIntersectionNode(ListNode* headA, ListNode* headB) {
     return p1;
 }
 
+void deleteDuplication(ListNode** head) {
+    if(*head = NULL) return;
+    ListNode* pre = nullptr;
+    ListNode* cur = *head;
+    while(cur != nullptr) {
+        ListNode* pnext = cur->next;
+        bool is_dupliacte = false;
+        if(pnext != nullptr && pnext->val == pre->val)
+            is_dupliacte = true;
+        if(!is_dupliacte) {
+            pre = cur;
+            cur = cur->next;
+        } else {
+            int val = cur->val;
+            ListNode* pto_be_delete = cur;
+            while(pto_be_delete != nullptr && pto_be_delete->val == val) {
+                pnext = pto_be_delete->next;
+                delete pto_be_delete;
+
+                pto_be_delete = nullptr;
+                pto_be_delete = pnext;
+            }
+            if(pre == nullptr)
+                *head = pnext;
+            else pre->next = pnext;
+            cur = pnext;
+        }
+    }
+}
 
 
 int main() {

@@ -64,7 +64,6 @@ string addBinary(string a, string b) {
     return res;
 }
 
-
 int lengthOfLongestSubstring(string s) {
     int maxlen = 0;
     int curlen = 0;
@@ -202,6 +201,19 @@ char firstUniqChar(string s) {
         if(table[c] == 1) return c;
     }
     return ' ';
+}
+
+string minNumber(vector<int>& nums) {
+    vector<string> strs;
+    string ans;
+    for(int num : nums) 
+        strs.push_back(to_string(num));
+    sort(strs.begin(), strs.end(), [](string& a, string& b){
+        return a+b < b+a;
+    });
+    for(string str : strs)
+        ans += str;
+    return ans;
 }
 
 int main() {

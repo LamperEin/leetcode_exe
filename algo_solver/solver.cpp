@@ -5,9 +5,10 @@
 #include <queue>
 #include <cstring>
 #include <bitset>
-
+#include <cmath>
 using namespace std;
 
+vector<int> res;
 vector<vector<int>> generate(int numRows) {
     vector<vector<int>> res;
     vector<int> a;
@@ -166,7 +167,17 @@ vector<vector<int>> findContinuousSequence(int target) {
 }
 
 int minArray(vector<int>& numbers) {
-    
+    if(numbers.size() == 0) return 0;
+    int l = 0, r = numbers.size()-1;
+    while(l < r) {
+        int mid = l + (r-l)>>1;
+        if(numbers[mid] > numbers[r])
+            l = mid + 1;
+        else if(numbers[mid] == numbers[r])
+            r--;
+        else r = mid;
+    }
+    return numbers[l];
 }
 
 bool canThreePartsEqualSum(vector<int>& A) {    
@@ -358,6 +369,99 @@ int nthUglyNumber(int n) {
         if(ugly[i] == ugly[p5]*5) p5++;
     }
     return ugly[n-1];
+}
+
+int findNthDigit(int n) {
+    n -= 1;
+    for(long digits = 1; digits < 11; digits++) {
+        int first_num = pow(10, digits-1);
+        if(n < 9*first_num*digits )
+            return int(to_string(first_num + n/digits)[n%digits])-'0';
+        n -= 9*first_num*digits;
+    }
+    return 0;
+}
+
+int countDigitOne(int n) {
+    int count = 0;
+    long i = 1; //指向遍历的位数，i=1即个位，i=10即十位
+    while(n/i!=0) {
+
+        long high = n/(10*i);
+        long cur = (n/i)%10;
+        long low = n-(n/i)*i;
+        if(cur == 0)
+            count += high*i;
+        else if (cur == 1)
+            count += high * i + low + 1;
+        else
+            count += high*i+i;
+        i *= 10;
+    }
+    return count;
+}
+
+vector<int> getLeastNumbers(vector<int>& nums, int k) {
+    vector<int> ans(k, 0);
+    if(k == 0) return ans;
+    priority_queue<int> q;
+    for(int i = 0; i < k; i++) q.push(nums[i]);
+    for(int i = k; i < nums.size(); i++) {
+        if(q.top() > nums[i]) {
+            q.pop();
+            q.push(nums[i]);
+        }
+    }
+    for(int i = 0; i < k; i++) {
+        ans[i] = q.top();
+        q.pop();
+    }
+    return ans;
+}
+
+int majorityElement(vector<int>& nums) {
+    int cnt = 0;
+    int ans = 0;
+    for(int i = 0; i < nums.size(); i++) {
+        if(cnt = 0) {
+            cnt = 1;
+            ans = nums[i];
+        } else if (ans == nums[i]) {
+            cnt++;
+        } else cnt--;
+    }
+    return ans;
+}
+// 剑指offer 面试题17
+void permutionNum(string& number, int length, int idx) {
+    if(idx == length) {
+        saveNum(number);
+        return;
+    } else {
+        for(int i = 0; i < 10; i++) {
+            number[idx] = '0'+i;
+            permutionNum(number, length, idx+1);
+        }
+    }
+}
+
+void saveNum(string number) {
+    string tmpstr (number.size(), '0');
+    //cout << stoi(number) << " ";  for debug
+    if(number != tmpstr)
+        res.push_back(stoi(number));
+}
+
+
+vector<int> printNumbers(int n) {
+    if(n <= 0) return res;
+    string number(n, 0);
+    for(int i = 0; i <= 9; i++) {
+        number[0] = i+'0';
+        permutionNum(number, n, 1);
+    }
+    return res;
+
 }
 
 int main() {
