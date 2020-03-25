@@ -433,6 +433,10 @@ int majorityElement(vector<int>& nums) {
     return ans;
 }
 // 剑指offer 面试题17
+void saveNum(string number) {
+
+}
+
 void permutionNum(string& number, int length, int idx) {
     if(idx == length) {
         saveNum(number);
@@ -445,12 +449,6 @@ void permutionNum(string& number, int length, int idx) {
     }
 }
 
-void saveNum(string number) {
-    string tmpstr (number.size(), '0');
-    //cout << stoi(number) << " ";  for debug
-    if(number != tmpstr)
-        res.push_back(stoi(number));
-}
 
 
 vector<int> printNumbers(int n) {
@@ -465,9 +463,11 @@ vector<int> printNumbers(int n) {
 }
 
 int main() {
-    vector<int> nums = {5, 7, 7, 8, 8, 10};
-    //cout << endl;
-    cout << search(nums, 8) << endl;
-    cout << search(nums, 9) << endl;
+    vector<vector<int>> nums = {{1, 2, 2}, {1, 2, 1}, {1, 1, 2}};
+    vector<int> num = {1, 1, 2};
+    for(vector<vector<int>>::iterator it = nums.begin(); it != nums.end(); it++) {
+        if(*it == num) 
+            cout << "found!" << endl;
+    }
     return 0;
 }

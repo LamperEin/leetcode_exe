@@ -119,8 +119,15 @@ ListNode* addTwoNumber(ListNode* l1, ListNode* l2) {
         
         carry = tmp / 10;
         tmp %= 10;
-
+        ListNode* nextnode = l1? l1 : l2;
+        if(nextnode==NULL) nextnode = new ListNode(tmp);
+        nextnode->val = tmp;
+        p->next = nextnode;
+        p = p->next;
+        l1 = l1? l1->next : NULL;
+        l2 = l2? l2->next : NULL;
     }
+    return ans.next;
 }
 ListNode* getIntersectionNode(ListNode* headA, ListNode* headB) {
     // double pointers
@@ -164,19 +171,7 @@ void deleteDuplication(ListNode** head) {
     }
 }
 
-        ListNode* next = l1? l1 : l2;
-        if(next==NULL) next = new ListNode(tmp);
-        next->val = tmp;
-
-        p->next = next;
-        p = p->next;
-        l1 = l1? l1->next : NULL;
-        l2 = l2? l2->next : NULL;
-    }
-}
-
 int main() {
-    //int a[30];
-    //memset(a, 0, sizeof(a));
+    
     return 0;
 }
