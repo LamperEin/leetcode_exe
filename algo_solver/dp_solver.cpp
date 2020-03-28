@@ -4,6 +4,7 @@
 #include <vector>
 #include <cstring>
 #include <cmath>
+#include <climits>
 using namespace std;
 
 int climbStairs(int n) {
@@ -112,9 +113,17 @@ vector<double> twoSum(int n) {
     return ans;
 }
 
+// dp[i][j] = dp[i-1][j] + dp[i][j-1]
 int uniquePaths(int m, int n) {
+    if(n == 1 || m == 1) return 1;
+    vector<vector<int>> dp(n+1, vector<int>(m+1 , 1));
+    for(int i = 2; i <= n; i++) {
+        for(int j = 2; j <= m; j++) {
+            dp[i][j] = dp[i-1][j]+dp[i][j-1];
+        }
+    }
 
-    return 0;
+    return dp[n][m];
 }
 
 int maxValue(vector<vector<int>>& grid) {
@@ -168,13 +177,18 @@ int cuttingRope(int n) {
     return dp[n];
 }
 
-bool isMatch(string s, string p) {
-
-    
+int maxProduct(vector<int> & nums) {
+    int xmax = nums[0], maxp = 0;
+    for(int i  = 1; i < nums.size(); i++) {
+        xmax = max(nums[i], xmax*nums[i]);
+        maxp = max(maxp, xmax);
+    }
+    return maxp;
 }
 
-
 int main() {
-
+    cout << uniquePaths(3, 2) << endl;
+    cout << uniquePaths(7, 3) << endl;
+    cout << uniquePaths(30, 35) << endl;
     return 0;
 }

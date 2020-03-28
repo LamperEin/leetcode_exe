@@ -5,6 +5,7 @@
 #include <stack>
 #include <unordered_map>
 #include <map>
+#include <climits>
 
 using namespace std;
 
@@ -112,10 +113,34 @@ vector<vector<string>> groupAnagrams(vector<string>& strs) {
     return res;
 }
 
-string longestPalindrome(string s) {
-    string ans;
+int expendAroundCenter(string& s, int left, int right) {
+    int l = left;
+    int r = right;
+    while(l >= 0 && r < s.size() && s[r] == s[l]) {
+        l--;
+        r++;
+    }
+    return r-l-1;
+}
 
-    return ans;
+string longestPalindrome(string s) {
+    if(s.size() < 2) return s;
+    int len = s.size();
+    int max_start = 0;
+    int max_end = 0;
+    int max_len = 0;
+
+    for(int i = 0; i < len; i++) {
+        int len1 = expendAroundCenter(s, i, i);
+        int len2 = expendAroundCenter(s, i, i+1);
+        max_len = max(max(len1, len2), max_len);
+        if(max_len > max_end - max_start+1) {
+            max_start = i - (max_len - 1)/2;
+            max_end = i + max_len/2;
+        }
+    }
+    
+    return s.substr(max_start, max_len);
 }
 
 string gcdOfStrings(string str1, string str2) {
@@ -216,6 +241,93 @@ string minNumber(vector<int>& nums) {
     return ans;
 }
 
+bool isNumber(string s) {
+        //1、从首尾寻找s中不为空格首尾位置，也就是去除首尾空格
+    int i=s.find_first_not_of(' ');
+    if(i==string::npos)return false;
+    int j=s.find_last_not_of(' ');
+    s=s.substr(i,j-i+1);
+    if(s.empty())return false;
+
+        //2、根据e来划分底数和指数
+    int e=s.find('e');
+
+        //3、指数为空，判断底数
+    if(e==string::npos)return judgeP(s);
+
+        //4、指数不为空，判断底数和指数
+    else return judgeP(s.substr(0,e))&&judgeS(s.substr(e+1));
+}
+
+bool judgeP(string s)//判断底数是否合法
+{
+    bool result=false,point=false;
+    int n=s.size();
+    for(int i=0;i<n;++i)
+    {
+        if(s[i]=='+'||s[i]=='-'){//符号位不在第一位，返回false
+            if(i!=0)return false;
+        }
+        else if(s[i]=='.'){
+            if(point)return false;//有多个小数点，返回false
+            point=true;
+        }
+        else if(s[i]<'0'||s[i]>'9'){//非纯数字，返回false
+            return false;
+        }
+        else{
+            result=true;
+        }
+     }
+    return result;
+}
+
+bool judgeS(string s)//判断指数是否合法
+{   
+    bool result=false;
+        //注意指数不能出现小数点，所以出现除符号位的非纯数字表示指数不合法
+    for(int i=0;i<s.size();++i)
+    {
+        if(s[i]=='+'||s[i]=='-'){//符号位不在第一位，返回false
+            if(i!=0)return false;
+        }
+        else if(s[i]<'0'||s[i]>'9'){//非纯数字，返回false
+            return false;
+        }
+        else{
+            result=true;
+        }
+    }
+    return result;
+}
+
+int myAtoi(string str) {
+    unsigned long len = str.length();
+
+    int idx = 0;
+    while(idx < len && str[idx] == ' ') idx++;
+    if (idx == len) return 0;
+    int sign = 1;
+    if(str[idx] == '+') idx++;
+    else if(str[idx] == '-') {
+        sign = -1;
+        idx++;
+    }
+
+    int ans = 0;
+    while(idx < len) {
+        char cur_char = str[idx];
+        if(cur_char < '0' || cur_char > '9') break;
+
+        if(ans > INT_MAX/10 || (ans == INT_MAX/10 && (cur_char - '0') > INT_MAX % 10)) 
+            return INT_MAX;
+        if(ans < INT_MIN/10 || (ans == INT_MIN/10 && (cur_char - '0') > -(INT_MIN % 10)))
+            return INT_MIN;
+        ans = ans*10 + sign * (cur_char - '0');
+        idx++;
+    }
+    return ans;
+}
 int main() {
    //string s = "HG[3|B[2|CA]]F";
     //string s;

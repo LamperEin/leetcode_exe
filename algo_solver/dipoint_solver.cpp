@@ -33,8 +33,8 @@ int arrayPairSum(vector<int>& nums) {
 
 //input: nums = [2, 7, 11, 15], target = 9
 //ouput: [1, 2]
-// 2 + 7 = 9. index1 = 1, index2 = 2;
-vector<int> twoSum(vector<int>& nums, int target) {
+// 2 + 7 = 9. index1 = 1, index2 = 2; 
+vector<int> twoSum(vector<int>& nums, int target) { // for sorted array
     vector<int> res;
     int l = 0, r = nums.size()-1;
     while(l < r) {
@@ -46,7 +46,7 @@ vector<int> twoSum(vector<int>& nums, int target) {
         } else if (tmp < target) {
             l++;
         } else {
-            r++;
+            r--;
         }
     }
     return res;

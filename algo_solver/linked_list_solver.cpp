@@ -10,6 +10,13 @@ struct ListNode {
     ListNode(int x): val(x), next(NULL) {}
 };
 
+struct Node {
+    int val;
+    Node* next;
+    Node* random ;
+    Node(int x):val(x), next(NULL), random(NULL){};
+};
+
 ListNode* swapPairs(ListNode* head) {
     if(head->next!= NULL) {
         head->next->next = head;
@@ -150,6 +157,54 @@ void deleteDuplication(ListNode** head) {
     }
 }
 
+
+Node* copyRandomList(Node* head) {
+    if(head == NULL) return head;
+    Node* cur = head;
+    while(cur) {
+        Node* tmp = new Node(cur->val);
+        Node* p = cur->next;
+        cur->next = tmp;
+        tmp->next = p;
+        cur = p;
+    }
+    cur = head;
+    while(cur) {
+        Node* t = cur->next;
+        if(cur->random)
+            t->random = cur->random->next;
+        else 
+            t->random = NULL;
+        cur = t->next;
+    }
+    cur = head;
+    Node* ans = head->next;
+    Node* preans = head->next;
+    while(ans && ans->next) {
+        Node* old = ans->next;
+        Node* newp = old->next;
+        cur->next = old;
+        ans->next = newp;
+        cur = old;
+        ans = newp;
+    }
+    if(cur) 
+        cur->next = nullptr;
+    return preans;
+}
+
+ListNode* merge(vector<ListNode*>& lists, int start, int end) {
+    if(start == end) return lists[start];
+    int mid = (start+end)/2;
+    ListNode* l1 = merge(lists, start, mid);
+    ListNode* l2 = merge(lists, mid+1, end);
+    return mergeTwoLists_recur(l1, l2);
+}
+
+ListNode* mergeKLists(vector<ListNode*>& lists) {
+    if(lists.empty()) return nullptr;
+    return merge(lists, 0, lists.size()-1);
+}
 
 int main() {
     //int a[30];

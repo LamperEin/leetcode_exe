@@ -2,6 +2,9 @@
 #include <algorithm>
 #include <vector>
 #include <stack>
+#include <queue>
+#include <climits>
+#include <sstream>
 
 using namespace std;
 int ans = 0, n = 0;
@@ -10,6 +13,11 @@ struct TreeNode {
     TreeNode* left;
     TreeNode* right;
     TreeNode(int x): val(x), left(NULL), right(NULL){}
+    TreeNode(int _x, TreeNode* _left, TreeNode* _right) {
+        val = _x;
+        left = _left;
+        right = _right;
+    }
 };
 
 int maxDepth_recur(TreeNode* root) {
@@ -179,6 +187,187 @@ int kthLargest_loop(TreeNode* root, int k) {
     return 0;
 }
 
+bool isSubStructure(TreeNode* A, TreeNode* B) {
+    if(A == NULL || B == NULL) return false;
+    return hasSubstructure(A, B) || isSubStructure(A->left, B) || isSubStructure(A->right, B);
+}
+
+bool hasSubstructure(TreeNode* A, TreeNode* B) {
+    if(B == NULL) return true;
+    if(A == NULL) return false;
+    if(A->val != B->val) return false;
+    return hasSubstructure(A->left, B->left) && hasSubstructure(A->right, B->right) ;
+}
+
+vector<int> levelOrder(TreeNode* root) {
+    vector<int> ans;
+    if(root == NULL) return ans;
+    queue<TreeNode*> que;
+    que.push(root);
+    while(!que.empty()) {
+        TreeNode* node = que.front();
+        que.pop();
+        ans.push_back(node->val);
+        if(node->left) que.push(node->left);
+        if(node->right) que.push(node->right);
+    }
+    return ans;
+}
+
+vector<vector<int>> levelOrder2(TreeNode* root) {
+    vector<vector<int>> ans;
+    if(root == NULL) return ans;
+    int nextlevel = 0, curlevel = 1;
+    queue<TreeNode*> que;
+    que.push(root);
+    vector<int> tmp;
+    while(!que.empty()) {
+        TreeNode* node = que.front();
+        que.pop();
+        tmp.push_back(node->val);
+        curlevel--;
+        if(node->left) {
+            que.push(node->left);
+            nextlevel++;
+        }
+        if(node->right) {
+            que.push(node->right);
+            nextlevel++;
+        }
+        if(curlevel == 0) {
+            ans.push_back(tmp);
+            curlevel = nextlevel;
+            nextlevel = 0;
+            tmp.clear();
+        }
+    }
+    return ans;
+
+}
+
+vector<vector<int>> levelOrder3(TreeNode* root) {
+    vector<vector<int>> ans;
+    if(root == NULL) return ans;
+    queue<TreeNode*> que;
+    que.push(root);
+    bool is_left = false;
+    while(!que.empty()) {
+        int levellen = que.size();
+        vector<int> tmp;
+        for(int i = 0; i < levellen; i++) {
+            TreeNode* node = que.front();
+            que.pop();
+            tmp.push_back(node->val);
+            if(node->left) que.push(node->left);
+            if(node->right) que.push(node->right);
+        }
+        is_left = !is_left;
+        if(!is_left) ans.push_back(vector<int>(tmp.rbegin(), tmp.rend()));
+        else ans.push_back(tmp);
+    }
+    return ans;
+}
+
+bool verifyPostorder(vector<int>& postorder) {
+    if(postorder.size() < 1) return true;
+    stack<int> sk;
+    int pre = INT_MAX;
+    for(int i = postorder.size()-1; i >= 0; i--) {
+        if(postorder[i] > pre)
+            return false;
+        while(sk.size() && postorder[i] < sk.top()) {
+            pre = sk.top();
+            sk.pop();
+        }
+        sk.push(postorder[i]);
+    }
+    return true;
+}
+
+void backtrack(TreeNode* root, int sum, vector<vector<int>> ans, vector<int> tmp) {
+    tmp.push_back(root->val);
+    if(sum == root->val && root->left == NULL && root->right == NULL)
+        ans.push_back(tmp);
+    if(root->left) backtrack(root->left, sum-root->val, ans, tmp);
+    if(root->right) backtrack(root->right, sum-root->val, ans, tmp);
+    tmp.pop_back();
+}
+
+vector<vector<int>> pathSum(TreeNode* root, int sum) {
+    if(root == NULL) return {};
+    vector<vector<int>> ans;
+    vector<int> tmp;
+    backtrack(root, sum, ans, tmp);
+    return ans;
+}
+
+void helper(TreeNode* root, TreeNode*& head, TreeNode*& pre) {
+    if(root == NULL) return;
+    helper(root->left, head, pre);
+    if(!head) {
+        head = root;
+        pre = root;
+    } else {
+        pre->right = root;
+        root->left = pre;
+        pre = root;
+    }
+    helper(root->right, head, pre);
+}
+
+TreeNode* treeToDoublyList(TreeNode* root) {
+    if(root== NULL) return NULL;
+    TreeNode* head = nullptr, *pre = nullptr;
+    helper(root, head, pre);
+    head->left = pre;
+    pre->right = head;
+    return head;
+}
+/*
+void kthSmallestCore(TreeNode* root, int k, int& n, int& ans) {
+    if(root==NULL) return;
+    if(root->left) kthSmallestCore(root->left, k, n, ans);
+    n++;
+    if(n == k) ans = root->val;
+    if(root->right) kthSmallestCore(root->right, k, n, ans);
+}
+
+int kthSmallest(TreeNode* root, int k) {
+    if(root==NULL) return 0;
+    int ans = 0;
+    int n = 0;
+    kthSmallestCore(root, k, n, ans);
+    return ans;
+}
+*/
+
+
+TreeNode* lowestCommonAncestor(TreeNode* root, TreeNode* p, TreeNode* q) {
+    if(root == NULL || p == root || q == root) return root;
+    TreeNode* leftnode = lowestCommonAncestor(root->left, p, q);
+    TreeNode* rightnode = lowestCommonAncestor(root->right, p, q);
+    if(leftnode == NULL) return rightnode;
+    if(rightnode == NULL) return leftnode;
+    return root;
+}
+
+
+TreeNode* deserialize(string data) {
+    istringstream input(data);
+    string val;
+    vector<TreeNode*> vec;
+    while(input >> val) {
+        if(val == "null") vec.push_back(NULL);
+        else vec.push_back(new TreeNode(stoi(val)));
+    }
+    int j = 1;
+    for(int i = 0; j < vec.size(); ++i) {
+        if(vec[i] == NULL) continue;
+        if(j < vec.size()) vec[i]->left = vec[j++];
+        if(j < vec.size()) vec[i]->right = vec[j++];
+    }
+    return vec[0];
+}
 int main() {
 
     return 0;

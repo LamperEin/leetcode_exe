@@ -55,8 +55,15 @@ int lastRemaining(int n, int m) {
     return last;
 }
 
+bool isPowerOfTwo(int n) {
+    if(n <= 2) return true;
+    return (n&(n-1)) == 0 ? true : false;
+}
+
 int main() {  //0123456789
-    int a = -1, b = 1;
-    cout << add(a, b) << endl;
+    int n = 3;
+    int n1 = 4;
+    cout << isPowerOfTwo(n) << endl;
+    cout << isPowerOfTwo(n1) << endl;
     return 0;
 }
