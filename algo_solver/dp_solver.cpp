@@ -4,6 +4,8 @@
 #include <vector>
 #include <cstring>
 #include <cmath>
+#include <climits>
+
 using namespace std;
 
 int climbStairs(int n) {
@@ -182,11 +184,107 @@ int cuttingRope(int n) {
 
 bool isMatch(string s, string p) {
 
-    
+    return false;
+}
+
+// dp[i][j] = min(dp[i-1][j]+grid[i][j], dp[i][j-1]+grid[i][j]) 
+int minPathSum(vector<vector<int>>& grid) {
+    int row = grid.size(), col = grid[0].size();
+    vector<vector<int>> dp(grid.size(), vector<int>(grid[0].size(), 0));
+    dp[0][0] = grid[0][0];
+    for(int i = 0; i < grid.size(); i++) {
+        for(int j = 0; j < grid[0].size(); j++) {
+            int left = INT_MAX, up = INT_MAX;
+            if(i-1 >= 0)
+                left = dp[i-1][j] + grid[i][j];
+            if(j-1 >= 0)
+                up = dp[i][j-1] + grid[i][j];
+            if(i == 0 && j == 0)
+                dp[i][j] = grid[0][0];
+            else
+                dp[i][j] = min(left, up);
+        }
+    }
+    return dp[row-1][col-1];
 }
 
 
+/** 01背包问题
+ *  dp[i+1][j]:= 从前i个物品中选出总重量不超过j的物品时的总价值的最大值
+ *  dp[0][j] = 0   
+ */
+int solve(int n, int w, vector<int>& W, vector<int>& V) {
+    vector<vector<int>> dp(n+1, vector<int>(w+1, 0));
+    for(int i = 0; i < n; i++) {
+        for(int j = 0; j <= w; j++) {
+            if(j < W[i])
+                dp[i+1][j] = dp[i][j];
+            else
+                dp[i+1][j] = max(dp[i][j], dp[i][j-W[i]]+V[i]);
+        }
+    }
+}
+
+
+/** 最长公共子序列
+ *  input: s1="abcde", s2="ace" output: 3 
+ */
+int longestCommonSubsequence(string s1, string s2) {
+    int n = s1.length(), m = s2.length();
+    vector<vector<int>> dp(n+1, vector<int>(m+1, 0));
+    for(int i = 0; i < n; i++) {
+        for(int j = 0; j < m; j++) {
+            if(s1[i] == s2[j])
+                dp[i+1][j+1] = dp[i][j]+1;
+            else dp[i+1][j+1] = max(dp[i][j+1], dp[i+1][j]);
+        }
+    }
+    return dp[n][m];
+}
+
+/** leetcode-887 鸡蛋掉落
+ *  input: K=1, N=2 output: 2
+ *  input: K=2, N=6 output: 3
+ */
+int superEggDrop(int K, int N) {
+    vector<vector<int>> dp(K+1, vector<int>(N+1));
+    
+    int m = 0;
+    while(dp[K][m] < N) {
+        m++;
+        for(int k = 1; k <= K; k++) 
+            dp[k][m] = dp[k][m-1]+dp[k-1][m-1]+1;
+    }
+    return m;
+}
+
+/** leetcode-72 编辑距离
+ *  input: s1="horse", s2="ros" output: 3
+ *  horse -> rorse ('h' -> 'r')
+ *  rorse -> rose (delete 'r')
+ *  rose -> ros (delete 'e')
+ */
+int minDistance(string s1, string s2) {
+    int m = s1.length(), n = s2.length();
+    if(m*n == 0) return m+n;
+    vector<vector<int>> dp(m+1, vector<int>(n+1));   
+    for(int i = 0; i <= m; ++i)
+        dp[i][0] = i;
+    for(int j = 0; j <= n; ++j)
+        dp[0][j] = j;
+
+    for(int i = 1; i <= m; i++) {
+        for(int j = 1; j <= n; j++) {
+            if(s1[i-1] == s2[j-1])
+                dp[i][j] = dp[i-1][j-1];
+            else
+                dp[i][j] = min(dp[i-1][j], min(dp[i-1][j-1], dp[i][j-1]))+1;
+        }
+    }
+    return dp[m][n];
+}
+
 int main() {
-    cout << getKthMagicNumber(16) << endl;
+
     return 0;
 }

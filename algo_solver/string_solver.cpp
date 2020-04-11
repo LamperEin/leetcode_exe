@@ -5,6 +5,8 @@
 #include <stack>
 #include <unordered_map>
 #include <map>
+#include <cstring>
+#include <limits>
 
 using namespace std;
 
@@ -123,7 +125,7 @@ int longestPalindrome(string s) {
         if (v % 2 == 1 and ans % 2 == 0)
             ++ans;
     }
-
+    return ans;
 }
 
 string gcdOfStrings(string str1, string str2) {
@@ -224,11 +226,91 @@ string minNumber(vector<int>& nums) {
     return ans;
 }
 
-int main() {
-   //string s = "HG[3|B[2|CA]]F";
-    //string s;
-    //getline(cin, s);
-    //cout << stringUnzip(s) << endl;
 
+bool isMatch(const char* s, const char* p) {
+    if(*p == 0) return *s == 0;
+    bool first_match = *s && (*s == *p || *p == '.');
+    if(*(p+1) == '*')
+        return isMatch(s, p+2) || (first_match && isMatch(++s, p));
+    else return first_match && isMatch(++s, ++p);
+}
+
+void reverseString(char* s, int l, int r) {
+    while(l <= r) {
+        swap(s[l++], s[r--]);
+    }
+}
+
+void leftRotate(char* s, int len, int m) {
+    int k = len-m;
+    k %= len;
+    reverseString(s, 0, k-1);
+    reverseString(s, k, len-1);
+    reverseString(s, 0, len-1);
+}
+
+bool stringContain(string& a, string& b) {
+    int hash = 0;
+    for(int i = 0; i < a.length(); ++i) {
+        hash |= (1 << (a[i]-'A'));
+    }
+    for(int i = 0; i < b.length(); ++i) {
+        if(hash & (1 << (b[i]-'A')) == 0)
+            return false;
+    }
+    return true;
+}
+
+// the helper function for longestContinueCharacter
+int countCharacter(string& s, int& cnt, int& maxlen, int idx) {
+    if(idx == s.size())
+        return maxlen;
+    if(s[idx-1] == s[idx])
+        cnt++;
+    else {
+        maxlen = maxlen < cnt ? cnt: maxlen;
+        cnt = 1;
+    }
+    return countCharacter(s, cnt, maxlen, idx+1);
+}
+
+/** 最长连续字符
+ *  input: aaaabbcc -> output:4
+ */
+int longestContinueCharacter(string s) {
+    if(s.size() == 0) return 0;
+    int maxlen = 1, cnt = 1;
+    
+    return countCharacter(s, cnt, maxlen, 1);
+}
+
+
+
+int main() {
+    int n;
+    cin >> n;
+    vector<string> strs(n);
+    for(int i = 0; i < n; i++)
+        cin >> strs[i];
+    string s = strs[0];
+    int ans = 1;
+    int idx = 1;
+    while(idx < n) {
+        string next_s = strs[idx];
+        bool found = false;
+        if(next_s.size() == s.size()) {
+            for(int i = 0; i < s.size();i++) {
+                string tmp = s.substr(i)+s.substr(0,i);
+                if(tmp == next_s) {
+                    found = true;
+                    break;
+                }
+            }
+            if(not found) { s = next_s; ans++;}
+        }
+        else { s = next_s; ans++; }
+        idx++;
+    }
+    cout << ans << endl;
     return 0;
 }

@@ -4,9 +4,17 @@
 #include <stack>
 #include <cstring>
 #include <string>
+#include <unordered_map>
 
 using namespace std;
-
+/**board = [ ['A', 'B', 'C', 'E'], 
+ *           ['S', 'F', 'C', 'S'], 
+ *           ['A', 'D', 'E', 'E']]
+ * 
+ *  for word = "ABCCED" -> true
+ *  for word = "SEE" -> true
+ *  for word = "ABCB" -> false
+ */
 bool backtrack(vector<vector<char>>& board, int r, int c, string word, int idx) {
     if(idx == word.size()) return true;
     if(r < 0 || r >= board.size() || 
@@ -124,11 +132,10 @@ void subsetsCore(vector<int>& nums, int start, vector<vector<int>>& ans, vector<
     ans.push_back(nums);
     for(int i = start; i < nums.size(); i++) {
         tmp.push_back(nums[i]);
-        subsetsCore(nums, start+1, ans, tmp);
+        subsetsCore(nums, i+1, ans, tmp);
         tmp.pop_back();
     }
 }
-
 
 vector<vector<int>> subsets(vector<int>& nums) {
     vector<vector<int>> ans;
@@ -137,21 +144,93 @@ vector<vector<int>> subsets(vector<int>& nums) {
     return ans;
 }
 
-vector<string> letterCombinations(string digits) {
+// the help function for letterCombinations
+void backtracking(unordered_map<char, string>& table, vector<string>& ans, 
+                  string& tmp, string& digits, int idx) {
+    if(idx == digits.size()) {
+        ans.push_back(tmp);
+        return;
+    }
     
+    for(char c : table[digits[idx]]) {
+        tmp += c;
+        backtracking(table, ans, tmp, digits, idx+1);
+        tmp.pop_back();
+    }
+}
+/*leetcode-17 电话号码的字母组合
+* input: "23"
+* output: ["ad", "ae", "af", "bd", "be", "bf", "cd", "ce", "cf"]
+*/
+vector<string> letterCombinations(string digits) {
+    vector<string> ans;
+    if(digits.size() == 0) return ans;
+    unordered_map<char, string> table {{'2', "abc"}, {'3', "def"}, {'4', "ghi"}, 
+                                         {'5', "jkl"}, {'6', "mno"}, {'7', "pqrs"}, 
+                                         {'8', "tuv"}, {'9', "wxyz"}};
+    string tmp = "";
+    backtracking(table, ans, tmp, digits, 0);
+    return ans;
+}
+
+// the help function for generateParanthesis
+bool isLegal(string s, int n) {
+    stack<char> sk;
+    for(char c : s) {
+        if(c == '(')
+            sk.push(c);
+        else if(!sk.empty() && c == ')')
+            sk.pop();
+        else return false;
+    }
+    return 2*n-s.size() >= sk.size() ? true : false;
+}
+
+void backtracking(vector<string>& ans, string& tmp, int n, int idx) {
+    if(idx == 2*n) {
+        ans.push_back(tmp);
+        return;
+    }
+    for(char c : "()") {
+        tmp += c;
+        if(isLegal(tmp, n)) {
+            backtracking(ans, tmp, n, idx+1);
+        }
+        tmp.pop_back();
+    }
+}
+
+/* leetcode-22 括号生成
+*  input: n = 3
+*  output: ["((()))", "(()())", "(())()", 
+*           "()(())", "()()()"]
+*/
+vector<string> generateParanthesis(int n) {
+    vector<string> ans;
+    if(n == 0) return ans;
+    string tmp = "(";
+    backtracking(ans, tmp, n, 1);
+    return ans;
 }
 
 
 
+void solveSudoku(vector<vector<char>>& board) {
+
+
+}
+
 int main() {
-   const int n = 4;
-    vector<vector<int>> ans = combine(4, 2);
-    for(int i = 0; i < ans.size(); ++i) {
-        for(int j = 0; j < 2; ++j) {
-            cout << ans[i][j] << " ";
-        }
-        cout << endl;
-    }
-    //cout << cnt << endl;
+    int n = 3;
+    string s = "((";
+    cout << isLegal(s, n) << endl;
+    s = "()((";
+    cout << isLegal(s, n) << endl;
+    s = "(()((";
+    cout << isLegal(s, n) << endl;
+    vector<string> ans = generateParanthesis(n);
+    for(string str : ans) 
+        cout << str << endl;
+    cout << endl;
     return 0;
 }

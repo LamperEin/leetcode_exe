@@ -1,5 +1,6 @@
 #include <iostream>
 #include <algorithm>
+#include <vector>
 #include <cmath>
 using namespace std;
 
@@ -19,13 +20,11 @@ bool canMeasureWater(int x, int y, int z) {
 }
 
 int add(int a, int b) {
-    int sum, carry;
-    do {
-        sum = a ^ b;
-        carry = ((unsigned int)(a & b)) << 1;
-        a = sum;
-        b = carry;
-    }while(b != 0);
+    while(b!=0) {
+        int tmp = a^b;
+        b = ((unsigned int)a&b)<<1;
+        a = tmp;
+    }
     return a;
 }
 
@@ -54,9 +53,36 @@ int lastRemaining(int n, int m) {
     }
     return last;
 }
+/** x的平方根
+ *  input: 4 -> output: 2
+ *  input: 8 -> output: 2
+*/
+int mysqrt(int n) {
+    long i;
+    for(i = 1; i <= n; i++) {
+        if(i*i == n)
+            return i;
+        if(i*i > n)
+            break;
+    }
+    return i-1;
+}
+
+/** 快乐数
+ *  input: 1e9 -> output: true
+ *  1^2+9^2 = 82 -> 8^2+2^2=68 -> 6^2+8^2=100 -> 1^2+0^2+0^2=1
+ */
+bool isHappy(int n) {
+    if(n == 0) return false;
+    if(n == 1) return true;
+    vector<int> ans;
+    while(n != 1) {
+        
+    }
+}
 
 int main() {  //0123456789
-    int a = -1, b = 1;
-    cout << add(a, b) << endl;
+  
+
     return 0;
 }

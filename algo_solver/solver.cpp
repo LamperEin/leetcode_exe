@@ -360,7 +360,7 @@ int reversePairs(vector<int>& nums) {
 int nthUglyNumber(int n) {
     if(n <= 0) return 0;
     vector<int> ugly(n ,0);
-    ugly[0] = 0;
+    ugly[0] = 1;
     int p2 = 0, p3 = 0, p5 = 0;
     for(int i = 1; i < n; i++) {
         ugly[i] = min(ugly[p2]*2, min(ugly[p3]*3, ugly[p5]*5));
@@ -449,8 +449,6 @@ void permutionNum(string& number, int length, int idx) {
     }
 }
 
-
-
 vector<int> printNumbers(int n) {
     if(n <= 0) return res;
     string number(n, 0);
@@ -459,15 +457,91 @@ vector<int> printNumbers(int n) {
         permutionNum(number, n, 1);
     }
     return res;
+}
 
+void rotate(vector<vector<int>>& matrix) {
+
+}
+
+/** leetcode 颜色分类
+ *  input: [2, 0, 2, 1, 1, 0] -> output: [0, 0, 1, 1, 2, 2]
+ */
+void sortColors(vector<int>& nums) {
+    if(nums.size() < 2) return;
+    int n = nums.size();
+    vector<int> cnt(3, 0);
+    for(int i = 0; i < n; i++) 
+        cnt[nums[i]]++;
+
+    int idx = 0;
+    for(int i = 0; i < 3; i++) {
+        while(cnt[i] > 0) {
+            nums[idx++] = i;
+            cnt[i]--;
+        }
+    }
+}
+// the help function for rotate
+void reverse(vector<int>& nums, int l, int r) {
+    while(l < r) 
+        swap(nums[l++], nums[r--]);
+}
+/** leetcode-189 旋转数组
+ *  input: [1, 2, 3, 4, 5, 6, 7] , k = 3
+ *  output: [5, 6, 7, 1, 2, 3, 4]
+ */
+void rotate(vector<int>& nums, int k) {
+    int n = nums.size();
+    k %= n;
+    reverse(nums, 0, n-1);
+    reverse(nums, 0, k-1);
+    reverse(nums, k, n-1);
+}
+
+/** leetcode-119 杨辉三角
+ *  input: 3 -> output: [1, 3, 3, 1]
+ */
+vector<int> getRow(int rowIndex) {
+    vector<int> ans(rowIndex+1);
+    for(int i = 0; i <= rowIndex; i++) {
+        for(int j = i; j >= 0; j--) {
+            if(j == 0 || j == i)
+                ans[j] = 1;
+            else ans[j] = ans[j] + ans[j-1];
+        }
+    }
+    return ans;
+}
+
+/** leetcode 移除元素
+ *  input: [3, 2, 2, 3], val=3
+ *  output: [2, 2], 2;
+ */
+int removeElement(vector<int>& nums, int val) {
+    int k = 0;
+    for(int i = 0; i < nums.size(); i++)
+        if(nums[i] != val) {
+            nums[k] = nums[i];
+            k++;
+        }
+    return k;
+}
+
+/** leetcode-209 长度最小的子数组
+ *  input: s=7, nums=[2, 3, 1, 2, 4, 3]
+ *  output: 2
+ *  子数组[4, 3]是该条件下的长度最小的连续子数组
+ */
+int minSubArray(int s, vector<int>& nums) {
+    
 }
 
 int main() {
-    vector<vector<int>> nums = {{1, 2, 2}, {1, 2, 1}, {1, 1, 2}};
-    vector<int> num = {1, 1, 2};
-    for(vector<vector<int>>::iterator it = nums.begin(); it != nums.end(); it++) {
-        if(*it == num) 
-            cout << "found!" << endl;
-    }
+    vector<int> nums = getRow(3);
+    for(int i = 0; i < nums.size(); i++)
+        cout << nums[i] << " ";
+    cout << endl;
     return 0;
 }
+
+
