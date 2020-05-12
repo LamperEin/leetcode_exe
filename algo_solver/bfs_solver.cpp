@@ -40,6 +40,14 @@ int maxAreaOfIsland(vector<vector<int>>& grid) {
     return ans;
 }
 
+/** leetcode-752 打开转盘锁
+ *  input: deadends = ["0201", "0101", "0102", "1212", "2002"], target = "0202"
+ *  output: 6
+ */
+int openLock(vector<String>& deadends, string target) {
+
+}
+
 int main() {
     
     return 0;

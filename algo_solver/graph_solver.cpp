@@ -6,6 +6,27 @@ using namespace std;
 
 const int maxdist = 9999;
 
+class Node {
+public:
+    int val;
+    vector<Node*> neighbors;
+    
+    Node() {
+        val = 0;
+        neighbors = vector<Node*>();
+    }
+    
+    Node(int _val) {
+        val = _val;
+        neighbors = vector<Node*>();
+    }
+    
+    Node(int _val, vector<Node*> _neighbors) {
+        val = _val;
+        neighbors = _neighbors;
+    }
+};
+
 void Dijkstra(int n, int v, vector<int>& dist, vector<int>& &pre, vector<vector<int>>& d) {
     vector<bool> s(n+1);
     for(int i = 1; i <= n; i++) { // 初始化出发点到其他个点的距离dis[]以及各点的前一个访问点pre[]
@@ -37,6 +58,48 @@ void Dijkstra(int n, int v, vector<int>& dist, vector<int>& &pre, vector<vector<
             }
         }
     }
+}
+
+/** 
+ * 
+ * 
+ */
+
+Node* cloneGraph(Node* node) {
+    Node* ans;
+    return ans;
+}
+
+/** leetcode-207 课程表
+ *  @param: number of courses
+ *  @param: the prerequisites courses
+ *  @return: the possiblity of finish the courses
+ */
+bool canFinish(int numCourses, vector<vector<int>>& prerequisites) {
+    map<int, set<int>> adjcent;
+    vector<int> indegree(numCourses);
+    for(auto& edge : prerequisites) {
+        int a = edge[0];
+        int b = edge[1];
+        adjcent[b].insert(a);
+        ++indegree[a];
+    }
+    int cnt = 0;
+    queue<int> q;
+    for(int i = 0; i < numCourses; ++i) {
+        if (!indegree[i]) q.push(i);
+    }
+    while(!q.empty()) {
+        auto v = q.front();
+        q.pop();
+        ++cnt;
+        auto& adjs = adjcent[v];
+        for(auto adj : adjs) {
+            --indegree[adj];
+            if(!indegree[adj]) q.push(adj);
+        }
+    }
+    return cnt == numCourses;
 }
 
 int main() {

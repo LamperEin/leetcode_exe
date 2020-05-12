@@ -108,10 +108,17 @@ bool isValid(string s) {
 }
 
 vector<vector<string>> groupAnagrams(vector<string>& strs) {
-    vector<vector<string>> res;
-
-
-    return res;
+    vector<vector<string>> ans;
+    unordered_map<string, vector<string>> table;
+    if(strs.size() == 0) return ans;
+    for(auto s : strs) {
+        string t = s;
+        sort(t.begin(), t.end());
+        table[t].push_back(s);
+    }
+    for(auto& it : table) 
+        ans.push_back(it.second);
+    return ans;
 }
 
 int longestPalindrome(string s) {
@@ -284,33 +291,157 @@ int longestContinueCharacter(string s) {
     return countCharacter(s, cnt, maxlen, 1);
 }
 
-
-
-int main() {
-    int n;
-    cin >> n;
-    vector<string> strs(n);
-    for(int i = 0; i < n; i++)
-        cin >> strs[i];
-    string s = strs[0];
-    int ans = 1;
-    int idx = 1;
-    while(idx < n) {
-        string next_s = strs[idx];
-        bool found = false;
-        if(next_s.size() == s.size()) {
-            for(int i = 0; i < s.size();i++) {
-                string tmp = s.substr(i)+s.substr(0,i);
-                if(tmp == next_s) {
-                    found = true;
-                    break;
+/** leetcode-466 统计重复个数
+ *  input: s1="abc", n1=4, s2="ab", n2=2
+ *  output: 2
+ */
+int getMaxRepetitions(string s1, int n1, string s2, int n2) {
+    if (n1 == 0) 
+        return 0;
+    int s1cnt = 0, index = 0, s2cnt = 0;
+    // recall 是我们用来找循环节的变量，它是一个哈希映射
+    // 我们如何找循环节？假设我们遍历了 s1cnt 个 s1，此时匹配到了第 s2cnt 个 s2 中的第 index 个字符
+    // 如果我们之前遍历了 s1cnt' 个 s1 时，匹配到的是第 s2cnt' 个 s2 中同样的第 index 个字符，那么就有循环节了
+    // 我们用 (s1cnt', s2cnt', index) 和 (s1cnt, s2cnt, index) 表示两次包含相同 index 的匹配结果
+    // 那么哈希映射中的键就是 index，值就是 (s1cnt', s2cnt') 这个二元组
+    // 循环节就是；
+    //    - 前 s1cnt' 个 s1 包含了 s2cnt' 个 s2
+    //    - 以后的每 (s1cnt - s1cnt') 个 s1 包含了 (s2cnt - s2cnt') 个 s2
+    // 那么还会剩下 (n1 - s1cnt') % (s1cnt - s1cnt') 个 s1, 我们对这些与 s2 进行暴力匹配
+    // 注意 s2 要从第 index 个字符开始匹配
+    unordered_map<int, pair<int, int>> recall;
+    pair<int, int> pre_loop, in_loop;
+    while (true) {
+            // 我们多遍历一个 s1，看看能不能找到循环节
+        ++s1cnt;
+        for (char ch: s1) {
+            if (ch == s2[index]) {
+                index += 1;
+                if (index == s2.size()) {
+                    ++s2cnt;
+                    index = 0;
                 }
             }
-            if(not found) { s = next_s; ans++;}
         }
-        else { s = next_s; ans++; }
-        idx++;
+        // 还没有找到循环节，所有的 s1 就用完了
+        if (s1cnt == n1) 
+            return s2cnt / n2;
+            // 出现了之前的 index，表示找到了循环节
+        if (recall.count(index)) {
+            auto [s1cnt_prime, s2cnt_prime] = recall[index];
+                // 前 s1cnt' 个 s1 包含了 s2cnt' 个 s2
+            pre_loop = {s1cnt_prime, s2cnt_prime};
+                // 以后的每 (s1cnt - s1cnt') 个 s1 包含了 (s2cnt - s2cnt') 个 s2
+            in_loop = {s1cnt - s1cnt_prime, s2cnt - s2cnt_prime};
+            break;
+        }
+        else {
+            recall[index] = {s1cnt, s2cnt};
+        }
     }
-    cout << ans << endl;
+    // ans 存储的是 S1 包含的 s2 的数量，考虑的之前的 pre_loop 和 in_loop
+    int ans = pre_loop.second + (n1 - pre_loop.first) / in_loop.first * in_loop.second;
+    // S1 的末尾还剩下一些 s1，我们暴力进行匹配
+    int rest = (n1 - pre_loop.first) % in_loop.first;
+    for (int i = 0; i < rest; ++i) {
+        for (char ch: s1) {
+            if (ch == s2[index]) {
+                ++index;
+                if (index == s2.size()) {
+                    ++ans;
+                    index = 0;
+                }
+            }
+        }
+    }
+    // S1 包含 ans 个 s2，那么就包含 ans / n2 个 S2
+    return ans / n2;
+}
+
+/** leetcode-76 最小覆盖子串
+ *  input: S="ADOBECODEBANC", T="ABC"
+ *  output:"BANC"
+ */
+string minWindow(string s, string t) {
+    int left = 0, right = 0, n = t.size(), start = 0, minlen = INT_MAX;
+    unordered_map<char, int> need;
+    unordered_map<char, int> window;
+    for(char c : t) need[c]++;
+
+    int match = 0;
+    while(right < s.size()) {
+        char c1 = s[right];
+        if(need.count(c1)) {
+            window[c1]++;
+            if(window[c1] == need[c1])
+                match++;
+        }
+            right++;
+        while(match == need.size()) {
+            if(right - left < minlen) {
+                minlen = right - left;
+                start = left;
+            }
+            char c2 = s[left];
+            if(need.count(c2)) {
+                window[c2]--;
+                if(window[c2] < need[c2])
+                    match--;
+            }
+            left++;
+        }
+     }
+    return minlen == INT_MAX ? "" : s.substr(start, minlen);
+}
+
+/** leetcode-438 找所有字母异位词
+ *  @param: two string
+ *  @return: all the anagrams start idx in the string s
+ */
+vector<int> findAnagrams(string s, string t) {
+    unordered_map<char, int> need, window;
+    for(char c : t) need[c]++;
+
+    int left = 0, right = 0;
+    int valid = 0;
+    vector<int> ans;
+    while(right < s.size()) {
+        char c = s[right];
+        right++;
+
+        if(need.count(c)) {
+            window[c]++;
+            if(window[c] == need[c])
+                valid++;
+        }
+
+        while(right - left >= t.size()) {
+
+            if(valid == need.size())
+                ans.push_back(left);
+            char d = s[left];
+            left++;
+
+            if(need.count(d)) {
+                if(window[d] == need[d])
+                    valid--;
+                window[d]--;
+            }
+        }
+    }
+    return ans;
+}
+
+/** leetcode-647 回文子串
+ *  @param: a strign s
+ *  @return: the number of palindrome substrings
+ */
+int countSubstring(string s) {
+    // 中心拓展法
+    return 0;
+}
+
+int main() {
+
     return 0;
 }

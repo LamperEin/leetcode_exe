@@ -13,6 +13,19 @@ int hammingWeight(uint32_t n) {
     return count;
 }
 
+/** leetcode-461 汉明距离
+ *  @param: x=1, y=4 @return:2
+ */
+int hammingDistance(int x, int y) {
+    int z = x^y;
+    int ans = 0;
+    while(z) {
+        ans += z&1;
+        z = z>>1;
+    }
+    return ans;
+}
+
 bool canMeasureWater(int x, int y, int z) {
     if(x + y < z) return false;
     if(x == 0 || y == 0) return z == 0 || x+y == z;
@@ -68,18 +81,20 @@ int mysqrt(int n) {
     return i-1;
 }
 
-/** 快乐数
- *  input: 1e9 -> output: true
- *  1^2+9^2 = 82 -> 8^2+2^2=68 -> 6^2+8^2=100 -> 1^2+0^2+0^2=1
+/** leetcode-279 完全平方数
+ *  @param: n=12  -> @return: 3
+ *  @note: 12 = 4+4+4
  */
-bool isHappy(int n) {
-    if(n == 0) return false;
-    if(n == 1) return true;
-    vector<int> ans;
-    while(n != 1) {
-        
+int numSquares(int n) {
+    while(0 == n%4) n /= 4;
+    if(7 == n%8) return 4;
+    for(int i = 0; i*i < n; i++) {
+        int j = pow(n-i*i, 0.5);
+        if(n == i*i+j*j) return 2;
     }
+    return 3;
 }
+
 
 int main() {  //0123456789
   

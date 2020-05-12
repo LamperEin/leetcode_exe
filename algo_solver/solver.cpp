@@ -8,6 +8,12 @@
 #include <cmath>
 using namespace std;
 
+class MountainArray {
+public:
+    int get(int index);
+    int length();
+};
+
 vector<int> res;
 vector<vector<int>> generate(int numRows) {
     vector<vector<int>> res;
@@ -23,16 +29,6 @@ vector<vector<int>> generate(int numRows) {
     }
     
     return res;
-}
-
-vector<int> spiralOrder(vector<vector<int>>& matrix) {
-    vector<int> res;
-    int left, right, down, up;
-    int row = matrix.size(), col = matrix[0].size();
-    while(res.size() == row * col) {
-
-    }
-   
 }
 
 vector<int> findDiagonalOrder(vector<vector<int>>& matrix) {
@@ -247,7 +243,10 @@ bool isStraight(vector<int>& nums) {
     }
     return cnt_gap >= cnt_zero? true : false;
 }
-
+/** leetcode-239 滑动窗口的最大值
+ *  input: [1,3,-1,-3,5,3,6,7], k=3
+ *  output:[3, 3, 5, 5, 6, 7]
+ */
 vector<int> maxSlidingWindow(vector<int>& nums, int k) {
     vector<int> ans;
     deque<int> idx;
@@ -458,9 +457,21 @@ vector<int> printNumbers(int n) {
     }
     return res;
 }
-
+/** leetcode-48 旋转图像
+ *  @param: a matrix to rotate
+ *  @return: None
+ */
 void rotate(vector<vector<int>>& matrix) {
-
+    int n = matrix.size();
+    for(int i = 0; i < (n+1)/2; i++) {
+        for(int j = 0; j < n/2; j++) {
+            int tmp = matrix[n-1-j][i];
+            matrix[n-1-j][i] = matrix[n-1-j][n-j-1];
+            matrix[n-1-j][n-j-1] = matrix[j][n-1-i];
+            matrix[j][n-1-i] = matrix[i][j];
+            matrix[i][j] = tmp;
+        }
+    }
 }
 
 /** leetcode 颜色分类
@@ -498,49 +509,245 @@ void rotate(vector<int>& nums, int k) {
     reverse(nums, k, n-1);
 }
 
-/** leetcode-119 杨辉三角
- *  input: 3 -> output: [1, 3, 3, 1]
- */
-vector<int> getRow(int rowIndex) {
-    vector<int> ans(rowIndex+1);
-    for(int i = 0; i <= rowIndex; i++) {
-        for(int j = i; j >= 0; j--) {
-            if(j == 0 || j == i)
-                ans[j] = 1;
-            else ans[j] = ans[j] + ans[j-1];
-        }
+/** leetcode-56 合并区间
+ *  input: [[1, 3], [2, 6], [8, 10], [15, 18]]
+ *  output: [[1, 6], [8, 10], [15, 18]]
+ *  区间[1, 3] 和 [2, 6] 重叠，将它们合并为[1, 6]
+ */ 
+vector<vector<int>> mergeInterval(vector<vector<int>>& intervals) {
+    vector<vector<int>> ans;
+    if(intervals.size() == 0 || intervals[0].size() == 0) return ans;
+    sort(intervals.begin(), intervals.end());
+    for(int i = 0; i < intervals.size(); i++) {
+        int start = intervals[i][0], end = intervals[i][1];
+        if(!ans.size() || ans.back()[1] < start)
+            ans.push_back({start, end});
+        else ans.back()[1] = max(ans.back()[1], end);
     }
     return ans;
 }
 
-/** leetcode 移除元素
- *  input: [3, 2, 2, 3], val=3
- *  output: [2, 2], 2;
+/** leetcode-162 寻找峰值
+ *  input: [1, 2, 3, 1] -> output: 2
+ *  3是峰值元素,返回其索引 2
  */
-int removeElement(vector<int>& nums, int val) {
-    int k = 0;
-    for(int i = 0; i < nums.size(); i++)
-        if(nums[i] != val) {
-            nums[k] = nums[i];
-            k++;
-        }
-    return k;
-}
-
-/** leetcode-209 长度最小的子数组
- *  input: s=7, nums=[2, 3, 1, 2, 4, 3]
- *  output: 2
- *  子数组[4, 3]是该条件下的长度最小的连续子数组
- */
-int minSubArray(int s, vector<int>& nums) {
+int findPeakElement(vector<int>& nums) {
     
 }
 
+/** leetcode-1248 统计[优美子数组]
+ *  input: [1, 1, 2, 1, 1], k=3 ->output:2
+ *  包合3个奇数的子数组[1, 1, 2, 1]和[1, 2, 1, 1]
+ */
+int numberOfSubarrays(vector<int>& nums, int k) {
+    int n = (int)nums.size();
+    int odd[n+2], ans = 0, cnt = 0;
+    for(int i = 0; i < n; i++) {
+        if(nums[i] & 1) odd[++cnt] = i;
+    }
+    odd[0] = -1, odd[++cnt] = n;
+    for(int i = 1; i+k <= cnt; i++) {
+        ans += (odd[i]-odd[i-1])*(odd[i+k] - odd[i+k-1]);
+    }
+    return ans;
+}
+
+/** leetcode-34 在排序数组中查找元素的第一个和最后一个位置
+ *  input: [5, 7, 7, 8, 8, 10], target=8 -> output: [3, 4]
+ *  input: [5, 7, 7, 8, 8, 10], target=9 -> output: [-1, -1]
+ */
+vector<int> searchRange(vector<int>& nums, int target) {
+    vector<int> ans(2, -1);
+    if(nums.size() < 1) 
+        return ans;
+    int l = 0, r = nums.size()-1;
+    // find left idx
+    while(l < r) {
+        int mid = l+(r-l)/2;
+        if(nums[mid] >= target) 
+            r = mid; 
+        else
+            l = mid+1;
+    }
+    if(nums[l] != target) return ans;
+    ans[0] = l;
+    l = 0, r = nums.size();
+    while(l < r) {
+        int mid = l+(r-l)/2;
+        if(nums[mid] <= target)
+            l = mid+1;
+        else r = mid;
+    }
+    ans[1] = l-1;
+    return ans;
+}
+
+/** leetcode-1052 爱生气的书店老板
+ *  input: customers=[1,0,1,2,1,1,7,5], grumpy=[0,1,0,1,0,1,0,1], X=3
+ *  output: 16
+ *  1+1+1+1+7+5=16
+ */ 
+int maxSatisfied(vector<int>& customers, vector<int>& grumpy, int X) {
+    int sum = 0, len = customers.size();
+    for(int i = 0; i < len; i++) {
+        if(grumpy[i] == 0) {
+            sum += customers[i];
+            customers[i] = 0;
+        }
+    }
+    int num = customers[0];
+    int maxval = customers[0];
+    for(int i = 1; i < len; i++) {
+        if(i < X) num += customers[i];
+        else num += customers[i] - customers[i-X];
+        maxval = max(maxval, num);
+    }
+    return (sum+maxval);
+}
+
+/** leetcode-448 找到所有数组中消失的数字
+ *  @param: a vector [4, 3, 2, 7, 8, 2, 3, 1]
+ *  @return: [5, 6];
+ */
+vector<int> findDisappearedNumbers(vector<int>& nums) {
+    for(int i = 0; i < nums.size(); i++) {
+        if(nums[abs(nums[i])-1] > 0) nums[abs(nums[i])-1] *= -1;
+    }
+    vector<int> ans;
+    for(int i = 0; i < nums.size(); i++){
+        if(nums[i] > 0)
+         ans.push_back(i+1);
+    }
+    return ans;
+}
+
+/** leetcode-31 下一个排列
+ *  @param: a vector of numbers
+ *  @return: generate the nex permutation of the vector
+ */
+void nextPermutation(vector<int>& nums) {
+    if(nums.size() == 1) return;
+    int i =  nums.size()-2;
+    int j = nums.size()-1;
+    int k = nums.size()-1;
+
+    while(i >= 0 && nums[i] >= nums[j]) {
+        i--; j--;
+    }
+    if(i >= 0) {
+        while(nums[i] >= nums[k]) k--;
+        swap(nums[i], nums[k]);
+    }
+    sort(nums.begin()+j, nums.end());
+}
+
+/** leetcode-560 和为k的子数组
+ *  @param: nums=[1, 1, 1], k=2
+ *  @return: 2, [1, 1,] 与 [1, 1]为两种不同的情况 
+ */
+int subarraySum(vector<int>& nums, int k) {
+    int sum = 0, ans = 0;
+    unordered_map<int, int> m;
+    m[0] = 1;
+    for(int num : nums) {
+        sum += num;
+        if(m.find(sum-k) != m.end()) ans += m[sum-k];
+        mp[sum]++;
+    }
+    return ans;
+}
+
+// the binary search for findInMountainArray
+int binSearch(MountainArray& mountainArr, int left, int right, int target, bool ascending) {
+    while(left <= right) {
+        int mid = left + (right-left)/2;
+        int midval = mountainArr.get(mid);
+        if(midval == target) {
+            return mid;
+        } 
+        if (midval < target) {
+            left = ascending ? mid+1 : left;
+            right = ascending ? right : mid-1;
+        } else {
+            right = descending ? mid-1 : right;
+            left = ascending ? left : mid+1;
+        }
+    }
+    return -1;
+}
+
+/** leetcode-1095 山脉数组中查找目标值
+ *  @param: array=[1,2,3,4,5,3,1], target=3
+ *  @return: 2, 3在数组中出现了两次，下标分别为2和5，返回最小的下表
+ *  如果没有找到返回-1
+ */
+int findInMountainArray(int target, MountainArray& mountainArr) {
+    int left = 0, right = mountainArr.length()-1;
+    while(left+1 < right) {
+        int mid = left + (right-left)/2;
+        int midval = mountainArr.get(mid);
+
+        if(midval > mountainArr.get(mid-1)) {
+            left = mid;
+        } else {
+            right = mid;
+        }
+    }
+    int peakidx = mountainArr.get(left) > mountainArr.get(right) ? left : right;
+    int idx = binSearch(mountainArr, 0, peakidx, target, true);
+    return idx != -1 ? idx : binSearch(mountainArr, peakidx+1, mountainArr.size()-1, target, false);
+}
+
+/** leetcode-238 除自身以外数组的乘积
+ *  @param: [1,2,3,4]
+ *  @return: [24,12,8,6]
+ */
+vector<int> productExceptSelf(vector<int>& nums) {
+    vector<int> ans(nums.size(), 1);
+    int left = 1, right = 1;
+    for(int i = 0; i < nums.size(); i++) {
+        ans[i] = left;
+        left = nums[i] * left;
+    }
+    for(int i = nums.size() - 1; i >= 0; i--) {
+        ans[i] *= right;
+        right = nums[i] * right;
+    }
+    return ans;
+}
+
+/** leetcode-128 最长连续序列
+ *  @param: a vector of numbers
+ *  @return: the longest consecutive subarray
+ */
+int longestConsecutive(vector<int>& nums) {
+    unordered_set<int> s(nums.begin(), nums.end());
+    int ans = 0;
+    for(int num : nums) {
+        if(s.count(num-1)) continue;
+        int curlen = 1;
+        while(s.count(num++ + 1)) ++curlen;
+        ans = max(ans, curlen);
+    }
+    return ans;
+}
+
+/** leetcode-240 搜索二维矩阵II
+ *  @param: a m x n matrix and a target value
+ *  @return: is the target exist in the matrix
+ */
+bool searchMatrix(vector<vector<int>>& matrix, int target) {
+    
+
+    return false;
+}
+
+
+
 int main() {
-    vector<int> nums = getRow(3);
-    for(int i = 0; i < nums.size(); i++)
-        cout << nums[i] << " ";
-    cout << endl;
+    vector<int> nums = {1, 0, 1, 2, 1, 1, 7, 5};
+    vector<int> grumpy = {0, 1, 0, 1, 0, 1, 0, 1};
+    cout << maxSatisfied(nums, grumpy, 3) << endl;
     return 0;
 }
 

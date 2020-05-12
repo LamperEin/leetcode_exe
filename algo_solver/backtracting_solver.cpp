@@ -5,6 +5,8 @@
 #include <cstring>
 #include <string>
 #include <unordered_map>
+#include <unordered_set>
+#include <cctype>
 
 using namespace std;
 /**board = [ ['A', 'B', 'C', 'E'], 
@@ -213,24 +215,112 @@ vector<string> generateParanthesis(int n) {
     return ans;
 }
 
+/** leetcode-36 有效的数独
+ *  @param：board 数独棋盘
+ *  @return: is a valid Sudoku
+ */
+bool isValidSudoku(vector<vector<char>>& board) {
+	unordered_map<char, int>row[9], column[9], sub[9];
+	for (int i = 0; i < 9; i++)
+		for (int j = 0; j < 9; j++)
+			if(board[i][j] != '.' && 
+				(row[i][board[i][j]]++ ||
+				column[j][board[i][j]]++ || 
+				sub[i / 3 * 3 + j / 3][board[i][j]]++))
+				return false;
+	return true;
+}
 
-
+// the help function for solveSudoku
+void solveSudokuCore(vector<vector<char>>& board, int x, int y) {
+    if(x == 8 && y == 8) return;
+    if(board[x][y] =='.') solveSudokuCore(board, x, y+1);
+}
+/** leetcode-37 解数独
+ *  @param: board 数独棋盘
+ *  @return: 数独棋盘的一个解
+ */
 void solveSudoku(vector<vector<char>>& board) {
+    solveSudokuCore(board, 0, 0);
+}
 
+// the help function for combinationSum
+void combinationSumCore(vector<int>& candidates, int target, vector<int>& tmp, vector<vector<int>>& ans, int left) {
+    if(target == 0) {
+        ans.push_back(tmp);
+        return;
+    }
+    for(int i = left; i < candidates.size(); i++) {
+        if(target-candidates[i] >= 0) {
+            tmp.push_back(candidates[i]);
+            combinationSumCore(candidates, target-candidates[i], tmp, ans, i);
+            tmp.pop_back();
+        }
+    }
+}
 
+/** leetcode-39 组合总和
+ *  @param: candidates=[2,3,6,7], target=7
+ *  @return: [[7], [2, 2, 3]]
+ */
+vector<vector<int>> combinationSum(vector<int>& candidates, int target) {
+    vector<vector<int>> ans;
+    if(candidates.size() == 0) return ans;
+    vector<int> tmp;
+    combinationSumCore(candidates, target, tmp, ans, 0);
+    return ans;
+}
+
+// the help function for partition
+void backtracking(string& s, vector<string>& tmp, vector<vector<string>>& ans) {
+    
+}
+
+/** leetcode-131 分割回文串
+ *  @param: a string "aab"
+ *  @return: all string that is a palindrome
+ */
+vector<vector<string>> partition(string s) {
+    vector<vector<string>> ans;
+    vector<string> tmp;
+    backtracking(s, tmp, ans);
+    return ans;
+}
+
+// the help function for letterCasePermutation
+void backtracking(string& S, string& tmp, int left, vector<string>& ans) {
+    if(left == S.size()) {
+        ans.push_back(tmp);
+        return;
+    }
+    if(isdigit(S[left])) {
+        tmp += S[left];
+        backtracking(S, tmp, left+1, ans);
+    } else {
+        tmp += tolower(S[left]);
+        backtracking(S, tmp, left+1, ans);
+        tmp = tmp.substr(0, left);
+        tmp +=toupper(S[left]);
+        backtracking(S, tmp, left+1, ans);
+    }
+}
+
+/** leetcode-784 字母大小写排列
+ *  @param: S="a1b2"
+ *  @return: ["a1b2", "a1B2", "A1b2", "A1B2"]
+ */
+vector<string> letterCasePermutation(string S) {
+    vector<string> ans;
+    string tmp = "";
+    backtracking(S, tmp, 0, ans);
+    return ans;
 }
 
 int main() {
-    int n = 3;
-    string s = "((";
-    cout << isLegal(s, n) << endl;
-    s = "()((";
-    cout << isLegal(s, n) << endl;
-    s = "(()((";
-    cout << isLegal(s, n) << endl;
-    vector<string> ans = generateParanthesis(n);
-    for(string str : ans) 
-        cout << str << endl;
+    string s = "a1b2";
+    vector<string> ans = letterCasePermutation(s);
+    for(string str1 : ans)
+        cout << str1 << " ";
     cout << endl;
     return 0;
 }

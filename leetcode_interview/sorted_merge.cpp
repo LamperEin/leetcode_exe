@@ -74,6 +74,45 @@ int quickFind(vector<int>& a, int left, int right, int k) {
 int findKth(vector<int> a, int n, int k) {
     return quickFind(a, 0, n-1, k);
 }
+int hashCount[100001] = {0};
+
+vector<int> countSort(vector<int>& nums) {
+    /*int max = -50001, min = 50001;
+    for(int num : nums) {
+        max = max(num, max);
+        min = min(num, min);
+    }*/
+    vector<int> ans(nums.size());
+    for(int num : nums) {
+        hashCount[v+50000]++;
+    }
+    for(int i = 0; i <= 100000; i++){
+        while(hashCount[i] > 0) {
+            hashCount[i] -= 1;
+            ans.push_back(i-50000);
+        }
+    }
+    return ans;
+}
+
+void quickSort(vector<int>& nums, int l, int r) {
+    if(r <= l) return;
+    int j = l, v = nums[l];
+    for(int i = l+1; i <= r; i++) {
+        if(nums[i] < v) {
+            j++;
+            swap(nums[j], nums[i]);
+        }
+    }
+    swap(nums[l], nums[j]);
+    quickSort(nums, l, j-1);
+    quickSort(nums, j+1, r);
+}
+
+void quickSort(vector<int>& nums) {
+    quickSort(nums, 0, nums.size()-1);
+}
+
 
 int main() {
     int a[] = {1, 2, 4, 5, 7, 8, 9, 10};

@@ -48,12 +48,31 @@ public:
     }
 };
 
+bool isLegal(int a, int b, int c) {
+    vector<int> data {a, b, c};
+    sort(data.begin(), data.end());
+    a = data[0], b = data[1], c = data[2];
+    if(c < a+b && a > c-b)
+        return true;
+    return false;
+}
 
 int main() {
-    MaxHeap<int> maxheap = MaxHeap<int>(100);
-    cout << maxheap.size() << endl;
-
-    srand(time(NULL));
-    
+    int n = 0;
+    cin >> n;
+    if(n < 3) cout << 0 << endl;
+    vector<int> nums(n);
+    for(int i = 0; i < n; i++)
+        cin >> nums[i];
+    int ans = 0;
+    for(int i = 0; i <= nums.size()-3; i++) {
+        for(int j = i+1; j <= nums.size()-2; j++) {
+            for(int k = j+1; k <= nums.size()-1; k++) {
+                if(isLegal(nums[i], nums[j], nums[k]))
+                    ans++;
+            }
+        }
+    }
+    cout << ans << endl;
     return 0;
 }
