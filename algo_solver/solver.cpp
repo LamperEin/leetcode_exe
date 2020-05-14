@@ -351,7 +351,6 @@ int reversePairsCore(vector<int>& nums, int l, int r) {
     int mid = (r+l)>>1;
     vector<int> tmp;
     int ans = reversePairsCore(nums, l, mid) + reversePairsCore(nums, mid, r);
-
     int i = l;
     int j = mid;
     while(i < mid && j < r) {
@@ -729,8 +728,24 @@ int threeSumCloset(vector<int>& nums, int target) {
     }
     return ans;
 }
-
-
+// 搜索旋转数组--无重复元素
+int search(vector<int>& nums, int target) {
+    if(nums.size() == 0) return -1;
+    int l = 0, r = nums.size()-1;
+    while(l <= r) {
+        int mid = l+(r-l)/2;
+        if(nums[mid] == target) return mid;
+        else if(nums[mid] < nums[r]) {
+            if(nums[mid] < target && target < nums[r])
+                l = mid+1;
+            else r = mid-1;
+        } else {
+            if(nums[l] <= target && target < nums[mid])
+                r = mid-1;
+            else l = mid+1;
+        }
+    }
+}
 
 int main() {
 

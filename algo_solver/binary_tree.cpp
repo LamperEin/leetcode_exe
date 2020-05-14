@@ -28,11 +28,6 @@ int maxDepth_recur(TreeNode* root) {
     return max(left_tree_depth, right_tree_depth)+1;
 }
 
-int maxDepth_loop(TreeNode* root) {
-
-    return 0;
-}
-
 void preorderTraversal(vector<int>& res, TreeNode* root) {
     if(root != NULL) {
         res.push_back(root->val);
@@ -98,6 +93,7 @@ bool hasPathSum(TreeNode* root, int sum) {
 bool isValidBST(TreeNode* root) {
 
 }
+
 // The following is the solver of diameterOfBinaryTree
 int ans;
 int depth(TreeNode* rt) {
@@ -323,6 +319,7 @@ TreeNode* treeToDoublyList(TreeNode* root) {
     pre->right = head;
     return head;
 }
+
 /*
 void kthSmallestCore(TreeNode* root, int k, int& n, int& ans) {
     if(root==NULL) return;
@@ -341,7 +338,7 @@ int kthSmallest(TreeNode* root, int k) {
 }
 */
 
-
+// 二叉树
 TreeNode* lowestCommonAncestor(TreeNode* root, TreeNode* p, TreeNode* q) {
     if(root == NULL || p == root || q == root) return root;
     TreeNode* leftnode = lowestCommonAncestor(root->left, p, q);
@@ -368,6 +365,47 @@ TreeNode* deserialize(string data) {
     }
     return vec[0];
 }
+
+// the helper function for deleteNode
+TreeNode* min(TreeNode* node) {
+    if(node->left == NULL)
+        return node;
+    return min(node->left);
+}
+
+TreeNode* deleteMin(TreeNode* node) {
+    if(node->left == NULL)
+        return node->right;
+    node->left = deleteMin(node->left);
+    return node;
+}
+
+/** leetcode-450 删除二叉搜索树节点
+ *  @param: the root node of the tree and the key of the delete node
+ *  @return: the deleted tree root Node
+ */
+TreeNode* deleteNode(TreeNode* root, int key) {
+    if(root == NULL) return NULL;
+    if(key < root->val) {
+        root->left = deleteNode(root->left, key);
+        return root;
+    } else if(key > root->val) {
+        root->right = deleteNode(root->right, key);
+        return root;
+    } else {
+        if(root->left == NULL)
+            return root->right;
+        else if(root->right == NULL) 
+            return root->left;
+        else {
+            TreeNode* successor = min(root->right);
+            successor->right = deleteMin(root->right);
+            successor->left = root->left;
+            return successor;
+        }
+    }
+}
+
 int main() {
 
     return 0;
