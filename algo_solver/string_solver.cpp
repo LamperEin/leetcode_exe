@@ -113,7 +113,6 @@ vector<vector<string>> groupAnagrams(vector<string>& strs) {
     return res;
 }
 
-<<<<<<< HEAD
 int expendAroundCenter(string& s, int left, int right) {
     int l = left;
     int r = right;
@@ -142,20 +141,6 @@ string longestPalindrome(string s) {
     }
     
     return s.substr(max_start, max_len);
-=======
-int longestPalindrome(string s) {
-    unordered_map<char, int> count;
-    int ans = 0;
-    for (char c : s)
-        ++count[c];
-    for (auto p : count) {
-        int v = p.second;
-        ans += v / 2 * 2;
-        if (v % 2 == 1 and ans % 2 == 0)
-            ++ans;
-    }
-
->>>>>>> 84f23360f2eec80ea5f507a0bcbbca3e56f61ca6
 }
 
 string gcdOfStrings(string str1, string str2) {
@@ -343,6 +328,7 @@ int myAtoi(string str) {
     }
     return ans;
 }
+
 int main() {
    //string s = "HG[3|B[2|CA]]F";
     //string s;
