@@ -126,6 +126,18 @@ int uniquePaths(int m, int n) {
     return dp[n][m];
 }
 
+int getKthMagicNumber(int k) {
+    int p3 = 0, p5 = 0, p7 = 0;
+    int dp[k];
+    dp[0] = 1;
+    for(int i = 1; i < k; ++i) {
+        dp[i] = min(dp[p3] * 3, min(dp[p5] * 5, dp[p7] * 7));
+        if(dp[i] == dp[p3]*3) p3++;
+        if(dp[i] == dp[p5]*5) p5++;
+        if(dp[i] == dp[p7]*7) p7++;
+    }
+    return dp[k-1];
+}
 int maxValue(vector<vector<int>>& grid) {
     int rows = grid.size(), cols = grid[0].size();
     vector<int> dp(cols, 0);
@@ -187,8 +199,12 @@ int maxProduct(vector<int> & nums) {
 }
 
 int main() {
+<<<<<<< HEAD
     cout << uniquePaths(3, 2) << endl;
     cout << uniquePaths(7, 3) << endl;
     cout << uniquePaths(30, 35) << endl;
+=======
+    cout << getKthMagicNumber(16) << endl;
+>>>>>>> 84f23360f2eec80ea5f507a0bcbbca3e56f61ca6
     return 0;
 }

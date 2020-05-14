@@ -448,10 +448,14 @@ int majorityElement(vector<int>& nums) {
 }
 // 剑指offer 面试题17
 void saveNum(string number) {
+<<<<<<< HEAD
     string tmpstr (number.size(), '0');
     //cout << stoi(number) << " ";  for debug
     if(number != tmpstr)
         res.push_back(stoi(number));
+=======
+
+>>>>>>> 84f23360f2eec80ea5f507a0bcbbca3e56f61ca6
 }
 
 void permutionNum(string& number, int length, int idx) {
@@ -748,6 +752,15 @@ int search(vector<int>& nums, int target) {
 }
 
 int main() {
+<<<<<<< HEAD
 
+=======
+    vector<vector<int>> nums = {{1, 2, 2}, {1, 2, 1}, {1, 1, 2}};
+    vector<int> num = {1, 1, 2};
+    for(vector<vector<int>>::iterator it = nums.begin(); it != nums.end(); it++) {
+        if(*it == num) 
+            cout << "found!" << endl;
+    }
+>>>>>>> 84f23360f2eec80ea5f507a0bcbbca3e56f61ca6
     return 0;
 }

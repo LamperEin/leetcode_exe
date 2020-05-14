@@ -115,6 +115,27 @@ ListNode* getKthFromEnd(ListNode* head, int k) {
 
 }
 
+ListNode* addTwoNumber(ListNode* l1, ListNode* l2) {
+    ListNode ans_head(0), *p = &ans_head;
+    int carry = 0;
+    while(l1 || l2 || carry)  {
+        int tmp = 0;
+        if(l1) tmp += l1->val;
+        if(l2) tmp += l2->val;
+        tmp += carry;
+        
+        carry = tmp / 10;
+        tmp %= 10;
+        ListNode* nextnode = l1? l1 : l2;
+        if(nextnode==NULL) nextnode = new ListNode(tmp);
+        nextnode->val = tmp;
+        p->next = nextnode;
+        p = p->next;
+        l1 = l1? l1->next : NULL;
+        l2 = l2? l2->next : NULL;
+    }
+    return ans.next;
+}
 ListNode* getIntersectionNode(ListNode* headA, ListNode* headB) {
     // double pointers
     if(headA == NULL || headB == NULL) return nullptr;
@@ -157,6 +178,7 @@ void deleteDuplication(ListNode** head) {
     }
 }
 
+<<<<<<< HEAD
 
 Node* copyRandomList(Node* head) {
     if(head == NULL) return head;
@@ -206,8 +228,9 @@ ListNode* mergeKLists(vector<ListNode*>& lists) {
     return merge(lists, 0, lists.size()-1);
 }
 
+=======
+>>>>>>> 84f23360f2eec80ea5f507a0bcbbca3e56f61ca6
 int main() {
-    //int a[30];
-    //memset(a, 0, sizeof(a));
+    
     return 0;
 }

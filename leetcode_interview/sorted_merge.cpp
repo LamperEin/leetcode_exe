@@ -40,6 +40,50 @@ int reversePairs(vector<int>& nums) {
     return reversePairsCore(nums, 0, nums.size());
 }
 
+
+void quickSort(vector<int>& nums, int l, int r) {
+    if(l > r) return;
+    int i = l, j = r, x = nums[l];
+    while(i < j) {
+        while(i < j && nums[j] >= x)
+            j--;
+        if(i < j) nums[i++] = nums[j];
+
+        while(i < j && nums[i] <= x)
+            i++;
+        if(i < j) nums[j--] = nums[i];
+    }
+    a[i] = x;
+    quickSort(nums, l, i-1);
+    quickSort(nums, i+1, r);
+}
+
+int quickFind(vector<int>& a, int left, int right, int k) {
+    int i = left, j = right, pivot = a[left];
+
+    while(i < j) {
+        while(i < j && a[j] >= pivot)
+            j--;
+        if(i < j) a[i++] = a[j];
+
+        while(i < j && a[i] <= pivot)
+            i++;
+        if(i < j) a[i++] = a[j];
+    }
+    a[i] = pivot;
+    int ge_pivot = right - i;
+    if(k - ge_pivot - 1 == 0) // if pivot is kth num
+        return pivot;
+    else if(k - ge_pivot - 1 > 0) // if the count of num greate than pivot is less than k, find kth num in left part
+        return quickFind(a, left, i-1, k-ge_pivot-1);
+    else 
+        return quickFind(a, i+1, right, k); // find kth num in right part
+}
+
+int findKth(vector<int> a, int n, int k) {
+    return quickFind(a, 0, n-1, k);
+}
+
 int main() {
 
 
